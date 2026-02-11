@@ -1,0 +1,7 @@
+.DS_Store
+
+# Local tool settings
+.claude/settings.local.json
+
+# Large generated artifact (keep locally / upload separately)
+full_cleaning_nodes_before_after.html
