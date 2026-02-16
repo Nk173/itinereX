@@ -70,6 +70,12 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         help="Overall timeout for page load and tile wait",
     )
 
+    # Optional re-centering of the Leaflet map after load.
+    # Useful to create a consistent static snapshot (e.g., centered on the UK).
+    p.add_argument("--center-lat", type=float, default=None, help="Latitude to center the map on")
+    p.add_argument("--center-lon", type=float, default=None, help="Longitude to center the map on")
+    p.add_argument("--zoom", type=int, default=None, help="Leaflet zoom level to set")
+
     return p.parse_args(argv)
 
 
@@ -104,6 +110,37 @@ def _export(url: str, out_pdf: pathlib.Path, out_png: Optional[pathlib.Path], ar
 
         # Wait for Leaflet container to exist.
         page.wait_for_selector(".leaflet-container", timeout=timeout_ms)
+
+        # Optional: re-center the Leaflet map if requested.
+        if args.center_lat is not None and args.center_lon is not None:
+            page.evaluate(
+                """
+                ({lat, lon, zoom}) => {
+                  function isLeafletMap(obj) {
+                    return obj && typeof obj.setView === 'function' && obj._container && obj._container.classList;
+                  }
+
+                  const candidates = [];
+                  for (const k of Object.keys(window)) {
+                    try {
+                      const v = window[k];
+                      if (isLeafletMap(v)) candidates.push(v);
+                    } catch (e) {}
+                  }
+
+                  const map = candidates.find(m => m._container.classList.contains('leaflet-container')) || candidates[0];
+                  if (!map) return false;
+
+                  const z = (typeof zoom === 'number' && !Number.isNaN(zoom)) ? zoom : map.getZoom();
+                  map.setView([lat, lon], z, { animate: false });
+                  return true;
+                }
+                """,
+                {"lat": float(args.center_lat), "lon": float(args.center_lon), "zoom": args.zoom},
+            )
+
+            # Give tiles time to refill after the view changes.
+            page.wait_for_timeout(1500)
 
         # Best-effort: wait for some tiles to load (OSM tiles are <img class="leaflet-tile">).
         # Some Folium maps may render few/no tiles if a custom basemap is missing; in that case

@@ -23,8 +23,21 @@ Open the hosted map on GitHub Pages instead:
 
 [![Open the interactive after-cleaning map](itinere_network_cleaning_schematics.png)](https://nk173.github.io/itinereX/roads_after_cleaning.html)
 
-- Map (direct): https://nk173.github.io/itinereX/roads_after_cleaning.html
-- Map page: https://nk173.github.io/itinereX/
+- Map: https://nk173.github.io/itinereX/roads_after_cleaning.html
+
+## Network statistics
+
+| Metric | Value |
+|---|---:|
+| nodes | 8460 |
+| edges | 12849 |
+| avg_degree | 3.0375886524822695 |
+| avg_weighted_degree (sum of `weight` per node) | 167930.63592041272 (in seconds taken to travel from one node to another)|
+| connected_components | 12 |
+| largest_component_nodes | 7612 |
+| largest_component_edges | 11693 |
+| largest_component_fraction_of_nodes | 0.8997635933806146 |
+
 
 ## How to run
 
@@ -35,4 +48,6 @@ Outputs (written to repo root):
 - [roads_before_cleaning.html](roads_before_cleaning.html)
 - [roads_after_cleaning.html](roads_after_cleaning.html)
 - `G_clean_weighted_with_ids.pkl`
+
+
 
