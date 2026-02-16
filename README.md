@@ -15,16 +15,27 @@ The goal of this repository is to take the source linework (often with near-miss
 
 ![Network cleaning schematics](itinere_network_cleaning_schematics.png)
 
-## Interactive map (after cleaning)
-
-GitHub does not render embedded iframes in README files, so an embedded panel won’t work here.
-
-Open the hosted map on GitHub Pages instead:
+## Interactive map
+Open the hosted map on GitHub Pages:
 
 [![Open the interactive map](https://nk173.github.io/itinereX/roads_after_cleaning.html)
 
 - Map (direct): https://nk173.github.io/itinereX/roads_after_cleaning.html
 - Map page: https://nk173.github.io/itinereX/
+
+## Network statistics
+
+| Metric | Value |
+|---|---:|
+| nodes | 8460 |
+| edges | 12849 |
+| avg_degree | 3.0375886524822695 |
+| avg_weighted_degree (sum of `weight` per node) | 167930.63592041272 (in seconds taken to travel from one node to another)|
+| connected_components | 12 |
+| largest_component_nodes | 7612 |
+| largest_component_edges | 11693 |
+| largest_component_fraction_of_nodes | 0.8997635933806146 |
+
 
 ## How to run
 
