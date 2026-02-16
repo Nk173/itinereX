@@ -19,20 +19,12 @@ The goal of this repository is to take the source linework (often with near-miss
 
 GitHub does not render embedded iframes in README files, so an embedded panel won’t work here.
 
-### Option A (recommended): GitHub Pages
+Open the hosted map on GitHub Pages instead:
 
-This repo includes a small GitHub Pages site in `docs/` that embeds the interactive map:
+[![Open the interactive after-cleaning map](itinere_network_cleaning_schematics.png)](https://nk173.github.io/itinereX/roads_after_cleaning.html)
 
-- Open the Pages site: https://<your-username>.github.io/<your-repo>/
-
-To enable it:
-- Repository **Settings → Pages → Build and deployment**
-- **Source**: Deploy from a branch
-- **Branch**: `main` (or your default branch), **Folder**: `/docs`
-
-### Option B: Direct HTML link
-
-- Open the HTML map: [roads_after_cleaning.html](roads_after_cleaning.html)
+- Map (direct): https://nk173.github.io/itinereX/roads_after_cleaning.html
+- Map page: https://nk173.github.io/itinereX/
 
 ## How to run
 
