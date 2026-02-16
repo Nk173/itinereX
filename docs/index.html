@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>itinereX — Cleaned Road Network</title>
+    <style>
+      :root { color-scheme: light; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; }
+      header { padding: 20px 16px; border-bottom: 1px solid #e5e7eb; }
+      main { padding: 16px; max-width: 1200px; margin: 0 auto; }
+      h1 { margin: 0 0 8px 0; font-size: 20px; }
+      p { margin: 8px 0; color: #374151; }
+      .panel { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #fff; }
+      .panel-h { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      .panel-h a { color: #2563eb; text-decoration: none; }
+      .panel-h a:hover { text-decoration: underline; }
+      iframe { width: 100%; height: 720px; border: 0; }
+      img { max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+      .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+      @media (min-width: 980px) { .grid { grid-template-columns: 1fr; } }
+      footer { padding: 16px; color: #6b7280; font-size: 12px; }
+      code { background: #f3f4f6; padding: 1px 4px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <main style="padding:0; max-width:1200px; margin:0 auto;">
+        <h1>itinereX — Cleaned Road Network</h1>
+        <p>
+          Interactive map output from <code>itinerex_clean_network.py</code>.
+          Edges show <code>edge_id</code>, <code>u_id</code>, <code>v_id</code>, <code>time_s</code>, <code>dist_m</code>.
+        </p>
+      </main>
+    </header>
+
+    <main>
+      <div class="grid">
+        <section>
+          <h2 style="margin:0 0 8px 0; font-size:16px;">Cleaning schematic</h2>
+          <img src="itinere_network_cleaning_schematics.png" alt="Network cleaning schematics" />
+        </section>
+
+        <section class="panel">
+          <div class="panel-h">
+            <strong>After cleaning map</strong>
+            <span style="color:#6b7280;">(if the embed is blocked, open directly)</span>
+            <a href="roads_after_cleaning.html" target="_blank" rel="noopener noreferrer">Open map</a>
+          </div>
+          <iframe src="roads_after_cleaning.html" loading="lazy"></iframe>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      Built from the itiner-E dataset; topology cleaned + time-weighted edges.
+    </footer>
+  </body>
+</html>

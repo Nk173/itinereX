@@ -17,17 +17,22 @@ The goal of this repository is to take the source linework (often with near-miss
 
 ## Interactive map (after cleaning)
 
-GitHub does not render embedded iframes in README files. Use the direct link:
+GitHub does not render embedded iframes in README files, so an embedded panel won’t work here.
+
+### Option A (recommended): GitHub Pages
+
+This repo includes a small GitHub Pages site in `docs/` that embeds the interactive map:
+
+- Open the Pages site: https://<your-username>.github.io/<your-repo>/
+
+To enable it:
+- Repository **Settings → Pages → Build and deployment**
+- **Source**: Deploy from a branch
+- **Branch**: `main` (or your default branch), **Folder**: `/docs`
+
+### Option B: Direct HTML link
 
 - Open the HTML map: [roads_after_cleaning.html](roads_after_cleaning.html)
-
-If you are viewing this README in a renderer that supports iframes (e.g., VS Code Markdown Preview), you can expand the embedded panel below:
-
-<details>
-	<summary><b>Embedded map preview</b> (may not work on GitHub)</summary>
-	<br/>
-	<iframe src="roads_after_cleaning.html" width="100%" height="720" style="border:1px solid #ddd;"></iframe>
-</details>
 
 ## How to run
 
