@@ -21,11 +21,9 @@ GitHub does not render embedded iframes in README files, so an embedded panel wo
 
 Open the hosted map on GitHub Pages instead:
 
-[![Open the interactive after-cleaning map](itinere_network_cleaning_schematics.png)](https://nk173.github.io/itinereX/roads_after_cleaning.html)
+[![Open the interactive map](https://nk173.github.io/itinereX/roads_after_cleaning.html)
 
-- Map (direct): https://nk173.github.io/itinereX/roads_after_cleaning.html
-- Map page: https://nk173.github.io/itinereX/
-
+See the map in https://nk173.github.io/itinereX/roads_after_cleaning.html
 ## How to run
 
 1. Open the notebook: [itinere-X_network.ipynb](itinere-X_network.ipynb)
