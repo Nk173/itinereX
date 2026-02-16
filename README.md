@@ -18,10 +18,9 @@ The goal of this repository is to take the source linework (often with near-miss
 ## Interactive map
 Open the hosted map on GitHub Pages:
 
-[![Open the interactive map](https://nk173.github.io/itinereX/roads_after_cleaning.html)
+[![Open the interactive map](docs/roads_after_cleaning.png)
 
-- Map (direct): https://nk173.github.io/itinereX/roads_after_cleaning.html
-- Map page: https://nk173.github.io/itinereX/
+- Map: https://nk173.github.io/itinereX/roads_after_cleaning.html
 
 ## Network statistics
 
@@ -30,7 +29,7 @@ Open the hosted map on GitHub Pages:
 | nodes | 8460 |
 | edges | 12849 |
 | avg_degree | 3.0375886524822695 |
-| avg_weighted_degree (sum of `weight` per node) | 167930.63592041272 (in seconds taken to travel from one node to another)|
+| avg_weighted_degree (sum of `weight` per node) | 167930.63592041272 (in seconds)|
 | connected_components | 12 |
 | largest_component_nodes | 7612 |
 | largest_component_edges | 11693 |

@@ -52,6 +52,17 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     p.add_argument("--viewport-height", type=int, default=1000)
 
     p.add_argument(
+        "--clip-selector",
+        default=".leaflet-container",
+        help="CSS selector to clip PNG screenshots to (default: Leaflet map container). Use empty string to disable.",
+    )
+    p.add_argument(
+        "--pdf-landscape",
+        action="store_true",
+        help="Export PDF in landscape orientation (useful for wide maps).",
+    )
+
+    p.add_argument(
         "--wait-seconds",
         type=float,
         default=6.0,
@@ -167,13 +178,21 @@ def _export(url: str, out_pdf: pathlib.Path, out_png: Optional[pathlib.Path], ar
         page.pdf(
             path=str(out_pdf),
             format="A4",
+            landscape=bool(args.pdf_landscape),
             print_background=True,
             margin={"top": "10mm", "right": "10mm", "bottom": "10mm", "left": "10mm"},
         )
 
         # Optional PNG screenshot.
         if out_png is not None:
-            page.screenshot(path=str(out_png), full_page=True)
+            sel = (args.clip_selector or "").strip()
+            if sel:
+                locator = page.locator(sel)
+                # Wait for the map element to be visible before capturing.
+                locator.wait_for(state="visible", timeout=timeout_ms)
+                locator.screenshot(path=str(out_png))
+            else:
+                page.screenshot(path=str(out_png), full_page=True)
 
         context.close()
         browser.close()
