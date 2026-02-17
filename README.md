@@ -41,7 +41,7 @@ Open the hosted map on GitHub Pages:
 1. Open the notebook: [itinere-X_network.ipynb](itinere-X_network.ipynb)
 2. Run the cells top-to-bottom.
 
-Outputs (written to repo root):
+Outputs:
 - [roads_before_cleaning.html](roads_before_cleaning.html)
 - [roads_after_cleaning.html](roads_after_cleaning.html)
 - `G_clean_weighted_with_ids.pkl`
