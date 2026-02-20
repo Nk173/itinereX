@@ -18,9 +18,32 @@ The goal of this repository is to take the source linework (often with near-miss
 ## Interactive map
 Open the hosted map on GitHub Pages:
 
-[![Open the interactive map](docs/roads_after_cleaning.png)
+[![Cleaned network (interactive)](docs/roads_after_cleaning.png)](https://nk173.github.io/itinereX/roads_after_cleaning.html)
 
 - Map: https://nk173.github.io/itinereX/roads_after_cleaning.html
+
+## Province overlay + sub-networks
+
+The notebook also overlays Roman provinces (from `provinces/provinces.shp`) onto the cleaned network and partitions the graph into per-province sub-networks.
+
+**How sub-networks are constructed**
+- **Edge → province assignment:** each edge is assigned to the (most specific) province containing its midpoint; if the midpoint is not inside any polygon, the edge is assigned to the province with the longest overlap length.
+- **Crossing edges (excluded):** an edge is marked as crossing if its start/end points fall in different provinces.
+- **Outside edges (excluded):** an edge is outside if it cannot be assigned by midpoint or overlap fallback.
+- **Per-province subgraph:** for each province, we filter `G_clean` to edges assigned to that province and build a subgraph from the incident nodes.
+
+**Interactive province map**
+
+[![Provinces + roads + nodes (interactive)](docs/roads_with_provinces_nodes.png)](https://nk173.github.io/itinereX/roads_with_provinces_nodes.html)
+
+- Map (GitHub Pages): https://nk173.github.io/itinereX/roads_with_provinces_nodes.html
+- Map (local file): [roads_with_provinces_nodes.html](roads_with_provinces_nodes.html)
+
+**Province-related outputs**
+- [G_clean_weighted_edges_with_province.csv](G_clean_weighted_edges_with_province.csv): weighted edge list with `time_s` and province assignment (plus crossing/outside flags)
+- [crossing_edges.geojson](crossing_edges.geojson): edges whose endpoints fall in different provinces
+- [outside_provinces_edges.geojson](outside_provinces_edges.geojson): edges not assignable to any province
+- [province_subnetworks.pkl](province_subnetworks.pkl): per-province NetworkX subgraphs + edge tables
 
 ## Network statistics
 
