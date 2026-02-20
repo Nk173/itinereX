@@ -22,7 +22,7 @@ Open the hosted map on GitHub Pages:
 
 - Map: https://nk173.github.io/itinereX/roads_after_cleaning.html
 
-## Province overlay + sub-networks
+## Roman Provinces
 
 The notebook also overlays Roman provinces (from `provinces/provinces.shp`) onto the cleaned network and partitions the graph into per-province sub-networks.
 
@@ -36,8 +36,7 @@ The notebook also overlays Roman provinces (from `provinces/provinces.shp`) onto
 
 [![Provinces + roads + nodes (interactive)](docs/roads_with_provinces_nodes.png)](https://nk173.github.io/itinereX/roads_with_provinces_nodes.html)
 
-- Map (GitHub Pages): https://nk173.github.io/itinereX/roads_with_provinces_nodes.html
-- Map (local file): [roads_with_provinces_nodes.html](roads_with_provinces_nodes.html)
+- Map: https://nk173.github.io/itinereX/roads_with_provinces_nodes.html
 
 **Province-related outputs**
 - [G_clean_weighted_edges_with_province.csv](G_clean_weighted_edges_with_province.csv): weighted edge list with `time_s` and province assignment (plus crossing/outside flags)
