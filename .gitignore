@@ -2,3 +2,7 @@
 
 # Local tool settings
 .claude/settings.local.json
+
+# Generated caches (large, reproducible)
+data/hac_linkage_cache.pkl
+__pycache__/
