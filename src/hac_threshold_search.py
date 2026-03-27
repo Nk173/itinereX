@@ -120,23 +120,32 @@ for ti in top5:
 
 
 # ── Bootstrap CI ─────────────────────────────────────────────────────────────
-print(f"\nBootstrapping ({N_BOOTSTRAP} iterations, seed={SEED})...")
+# Searching all 8,000+ thresholds in every bootstrap iteration is far too slow.
+# Instead, narrow to the top-K candidates from the full sweep — the bootstrap
+# only needs to determine which of the plausible winners is most stable, not
+# re-examine the entire threshold space from scratch each time.
+TOP_K = 100
+top_k_idx = np.argsort(ari_full)[-TOP_K:]  # indices of top-K thresholds by ARI
+top_k_matrix = label_matrix[top_k_idx]     # (TOP_K, n_nodes) — pre-sliced
+
+print(f"\nBootstrapping ({N_BOOTSTRAP} iterations, seed={SEED}) "
+      f"over top-{TOP_K} candidate thresholds...")
 rng = np.random.default_rng(SEED)
 
-boot_best_t  = np.empty(N_BOOTSTRAP)  # best threshold (hours) per iteration
-boot_best_ari = np.empty(N_BOOTSTRAP)  # best ARI per iteration
+boot_best_t   = np.empty(N_BOOTSTRAP)
+boot_best_ari = np.empty(N_BOOTSTRAP)
 
 for b in range(N_BOOTSTRAP):
-    idx = rng.integers(0, n_nodes, size=n_nodes)  # sample with replacement
+    idx    = rng.integers(0, n_nodes, size=n_nodes)
     prov_b = province_labels[idx]
 
-    ari_b = np.array([
-        adjusted_rand_score(prov_b, label_matrix[ti][idx])
-        for ti in range(n_thresh)
+    ari_b  = np.array([
+        adjusted_rand_score(prov_b, top_k_matrix[ki][idx])
+        for ki in range(TOP_K)
     ])
-    best_b = int(np.argmax(ari_b))
-    boot_best_t[b]   = thresholds[best_b] / 3600
-    boot_best_ari[b] = ari_b[best_b]
+    best_ki = int(np.argmax(ari_b))
+    boot_best_t[b]    = thresholds[top_k_idx[best_ki]] / 3600
+    boot_best_ari[b]  = ari_b[best_ki]
 
     if (b + 1) % 100 == 0:
         print(f"  {b + 1}/{N_BOOTSTRAP}...", flush=True)

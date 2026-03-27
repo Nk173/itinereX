@@ -5,4 +5,8 @@
 
 # Generated caches (large, reproducible)
 data/hac_linkage_cache.pkl
+data/hac_linkage_single_cache.pkl
 __pycache__/
+
+# Generated map outputs (large HTML/interactive files, reproducible)
+maps/*.html

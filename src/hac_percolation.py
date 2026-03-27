@@ -37,17 +37,19 @@ from scipy.spatial.distance import squareform
 from pathlib import Path
 from collections import Counter
 
-from centrality_utils import load_graph, node_province_map
+from centrality_utils import load_graph, node_province_map, html_to_pdf
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 OUT_CURVE  = Path("maps/hac_percolation_curve.png")
 OUT_CSV       = Path("data/hac_clusters.csv")
-CACHE_PATH    = Path("data/hac_linkage_cache.pkl")
+CACHE_PATH    = Path("data/hac_linkage_average_cache.pkl")
 
 # Average linkage makes no Euclidean assumptions — appropriate for network
 # travel-time distances. Ward is mathematically valid here too but assumes
 # the distance space is approximately Euclidean.
 LINKAGE_METHOD = "average"
+# LINKAGE_METHOD = "single"
+
 
 # ── Load ──────────────────────────────────────────────────────────────────────
 print("Loading graph...")
@@ -241,7 +243,7 @@ crit_idx = int(np.argmin(drop)) + 1
 t_crit   = thresholds[crit_idx]
 
 # Fixed snapshot thresholds
-SNAPSHOT_HOURS = [6, 12, 24, 48, 168]   # 168h = 7 days
+SNAPSHOT_HOURS = [6, 12, 24, 48, 168, 288]   # 168h = 7 days, 288h = 12 days
 SNAPSHOTS = [(h, h * 3600) for h in SNAPSHOT_HOURS]
 
 print(f"\nSnapshot thresholds:")
@@ -253,33 +255,53 @@ for h, t_s in SNAPSHOTS:
 
 
 # ── Percolation curve ─────────────────────────────────────────────────────────
-# Plot log(hours) directly on a linear axis — gives true uniform log spacing
-# without matplotlib's log-scale quirks near zero.
-hours    = thresholds / 3600
-log_hours = np.log(np.where(hours == 0, 1e-6, hours))
-
+hours = thresholds / 3600
+hours_x = hours[hours>1]
+n_clusters_arr_x = n_clusters_arr[hours>1]
+largest_arr_x = largest_arr[hours>1]
 fig, ax1 = plt.subplots(figsize=(11, 5))
 ax2 = ax1.twinx()
 
-ax1.plot(log_hours, n_clusters_arr, color="#2c3e50", linewidth=1.5, label="N clusters")
-ax2.plot(log_hours, largest_arr,    color="#2980b9", linewidth=1.5, linestyle="--", label="Largest cluster size")
+ax1.plot(hours_x, n_clusters_arr_x, color="#2c3e50", linewidth=1.5, label="N clusters")
+ax2.plot(hours_x, largest_arr_x,    color="#2980b9", linewidth=1.5, linestyle="--", label="Largest cluster size")
+ax1.set_xscale("log")
+ax2.set_xscale("log")
+ax1.set_yscale("log")
+ax2.set_yscale("log")
+
+# ── Power-law fit: S_max ~ t^alpha ────────────────────────────────────────────
+# Fit over the scaling regime: t = 6h to 4000h.
+# np.polyfit(cov=True) returns the covariance matrix of the OLS estimates;
+# sqrt of the diagonal gives standard errors → 95% CI = ±1.96 SE.
+_lh = np.log10(hours_x[largest_arr_x > 0])
+_ls = np.log10(largest_arr_x[largest_arr_x > 0])
+_mask = (_lh >= np.log10(6)) & (_lh <= np.log10(4000))
+(_alpha, _log_a), _cov = np.polyfit(_lh[_mask], _ls[_mask], 1, cov=True)
+_a = 10 ** _log_a
+_se_alpha  = np.sqrt(_cov[0, 0])
+_ci_alpha  = 1.96 * _se_alpha          # 95% CI half-width
+_resid = _ls[_mask] - (_alpha * _lh[_mask] + _log_a)
+_r2 = 1 - np.sum(_resid**2) / np.sum((_ls[_mask] - _ls[_mask].mean())**2)
+_fit_y = _a * hours_x ** _alpha
+ax2.plot(hours_x, _fit_y, color="#85c1e9", linewidth=1.2, linestyle=":",
+         label=fr"Fit: $S_{{\max}} \propto t^{{{_alpha:.2f} \pm {_ci_alpha:.2f}}}$  ($R^2={_r2:.3f}$)")
+print(f"\nScaling law fit (largest cluster):  S_max ∝ t^{_alpha:.3f}  "
+      f"95% CI [{_alpha - _ci_alpha:.3f}, {_alpha + _ci_alpha:.3f}]  "
+      f"(a={_a:.2f},  R²={_r2:.4f},  fit range 6–4000h)")
 
 ax1.set_ylabel("Number of clusters", color="#2c3e50", fontsize=11)
 ax2.set_ylabel("Largest cluster size (nodes)", color="#2980b9", fontsize=11)
 ax1.tick_params(axis="y", labelcolor="#2c3e50")
 ax2.tick_params(axis="y", labelcolor="#2980b9")
 
-# Replace raw log values on x-axis with readable hour labels
-hour_ticks = [0.1, 0.5, 1, 6, 12, 24, 48, 168, 500, 2000]
-ax1.set_xticks([np.log(h) for h in hour_ticks])
-ax1.set_xticklabels([f"{h}h" if h < 48 else f"{h//24}d" for h in hour_ticks])
-ax1.set_xlabel("Distance threshold (log travel time)", fontsize=11)
+ax1.set_xlabel("Distance threshold (travel time, hours)", fontsize=11)
 
 for h, t_s in SNAPSHOTS:
-    ax1.axvline(np.log(h), color="#aaaaaa", linewidth=0.8, linestyle="--", alpha=0.7)
-    ax1.text(np.log(h) + 0.05, ax1.get_ylim()[1] * 0.97,
+    ax1.axvline(h, color="#aaaaaa", linewidth=0.8, linestyle="--", alpha=0.7)
+    ax1.text(h * 1.03, 0.97,
              f"{h}h" if h < 48 else f"{h//24}d",
-             color="#888888", fontsize=8, va="top")
+             color="#888888", fontsize=8, va="top",
+             transform=ax1.get_xaxis_transform())
 
 lines1, labels1 = ax1.get_legend_handles_labels()
 lines2, labels2 = ax2.get_legend_handles_labels()
@@ -349,12 +371,28 @@ def cluster_color(cluster_id: int) -> str:
     return _PALETTE[cluster_id % len(_PALETTE)]
 
 
+# Barrington Atlas rank → marker radius and display label
+_RANK_RADIUS = {1: 9, 2: 7, 3: 5}
+_RANK_LABEL  = {1: "Rank 1 (major)", 2: "Rank 2", 3: "Rank 3", 4: "Rank 4/5", 5: "Rank 4/5"}
+_CITY_COLOR  = "#2c3e50"
+
+
+def _parse_rank(raw) -> int:
+    """Normalise Barrington Atlas rank to an integer (1–5). Unknown → 5."""
+    try:
+        return int(str(raw).strip().split()[0])
+    except (ValueError, IndexError):
+        return 5
+
+
 def save_snapshot_map(
     nodes_4326: gpd.GeoDataFrame,
     edges_4326: gpd.GeoDataFrame,
     cluster_map: dict[int, int],
     hours: int,
     out_path: Path,
+    cities_df: pd.DataFrame | None = None,
+    provinces_gdf: gpd.GeoDataFrame | None = None,
 ) -> None:
     nodes = nodes_4326.copy()
     nodes["cluster"] = nodes["node_id"].map(cluster_map).fillna(-1).astype(int)
@@ -385,6 +423,45 @@ def save_snapshot_map(
         ).add_to(fg_nodes)
     fg_nodes.add_to(m)
 
+    # Optional province boundaries overlay
+    if provinces_gdf is not None:
+        prov_4326 = provinces_gdf.to_crs("EPSG:4326")
+        fg_prov = folium.FeatureGroup(name="Province boundaries", show=True)
+        folium.GeoJson(
+            prov_4326.__geo_interface__,
+            style_function=lambda _: {
+                "color": "#2c3e50",
+                "weight": 1.5,
+                "fillOpacity": 0,
+            },
+            tooltip=folium.GeoJsonTooltip(fields=["province"], aliases=["Province:"]),
+        ).add_to(fg_prov)
+        fg_prov.add_to(m)
+
+    # Optional cities overlay
+    if cities_df is not None:
+        fg_cities = folium.FeatureGroup(name="Cities (OxREP)", show=False)
+        for _, city in cities_df.iterrows():
+            rank   = _parse_rank(city["Barrington Atlas Rank"])
+            radius = _RANK_RADIUS.get(rank, 4)
+            folium.CircleMarker(
+                location=[city["Latitude (Y)"], city["Longitude (X)"]],
+                radius=radius,
+                color=_CITY_COLOR,
+                fill=True,
+                fill_color=_CITY_COLOR,
+                fill_opacity=0.75,
+                weight=1,
+                tooltip=(
+                    f"<b>{city['Ancient Toponym']}</b>"
+                    f"<br>Modern: {city['Modern Toponym']}"
+                    f"<br>Province: {city['Province']}"
+                    f"<br>{_RANK_LABEL.get(rank, 'Unranked')}"
+                    f"<br>Dates: {city['Start Date']} – {city['End Date'] if pd.notna(city['End Date']) else 'ongoing'}"
+                ),
+            ).add_to(fg_cities)
+        fg_cities.add_to(m)
+
     folium.LayerControl(collapsed=False).add_to(m)
 
     label = f"{hours}h" if hours < 48 else f"{hours//24}d"
@@ -400,13 +477,97 @@ def save_snapshot_map(
     m.get_root().html.add_child(folium.Element(legend))
     m.save(str(out_path))
     print(f"Map saved → {out_path}")
+    html_to_pdf(out_path)
 
+
+print("\nLoading cities (OxREP)...")
+cities_df = pd.read_excel(Path("data/OxREP_data.xlsx"), sheet_name="Cities")
+print(f"  {len(cities_df)} cities loaded")
+
+print("Loading province boundaries...")
+provinces_gdf = gpd.read_file(Path("provinces/provinces.shp"))
+print(f"  {len(provinces_gdf)} provinces loaded")
 
 print("\nSaving snapshot maps...")
 for h, t_s in SNAPSHOTS:
     label = f"{h}h" if h < 48 else f"{h // 24}d"
     out = Path(f"maps/hac_snapshot_{label}.html")
-    save_snapshot_map(nodes_4326, edges_4326, snapshot_clusters[h], h, out)
+    save_snapshot_map(
+        nodes_4326, edges_4326, snapshot_clusters[h], h, out,
+        cities_df=cities_df if h == 48 else None,
+        provinces_gdf=provinces_gdf if h == 288 else None,
+    )
+
+
+# ── Combined PDF: percolation curve + 4 static snapshot maps ──────────────────
+print("\nSaving combined PDF figure...")
+COMBINED_PDF = Path("maps/hac_percolation_combined.pdf")
+_MAP_HOURS = [6, 12, 24, 48]   # 6h, 24h, 10d, 42d
+
+fig = plt.figure(figsize=(20, 11))
+gs  = fig.add_gridspec(2, 4, height_ratios=[2, 1], hspace=0.38, wspace=0.08)
+
+# ── Top row: percolation curve (full width) ────────────────────────────────
+ax1c = fig.add_subplot(gs[0, :])
+ax2c = ax1c.twinx()
+
+ax1c.plot(hours_x, n_clusters_arr_x, color="#2c3e50", linewidth=1.5, label="N clusters")
+ax2c.plot(hours_x, largest_arr_x,    color="#2980b9", linewidth=1.5, linestyle="--",
+          label="Largest cluster size")
+ax2c.plot(hours_x, _a * hours_x ** _alpha, color="#85c1e9", linewidth=1.2, linestyle=":",
+          label=fr"Fit: $S_{{\max}} \propto t^{{{_alpha:.2f} \pm {_ci_alpha:.2f}}}$  ($R^2={_r2:.3f}$)")
+
+ax1c.set_xscale("log"); ax2c.set_xscale("log")
+ax1c.set_yscale("log"); ax2c.set_yscale("log")
+ax1c.set_ylabel("Number of clusters",           color="#2c3e50", fontsize=10)
+ax2c.set_ylabel("Largest cluster size (nodes)", color="#2980b9", fontsize=10)
+ax1c.tick_params(axis="y", labelcolor="#2c3e50")
+ax2c.tick_params(axis="y", labelcolor="#2980b9")
+ax1c.set_xlabel("Distance threshold (travel time, hours)", fontsize=10)
+
+for h, t_s in SNAPSHOTS:
+    ax1c.axvline(h, color="#aaaaaa", linewidth=0.8, linestyle="--", alpha=0.7)
+    ax1c.text(h * 1.03, 0.97,
+              f"{h}h" if h < 48 else f"{h//24}d",
+              color="#888888", fontsize=8, va="top",
+              transform=ax1c.get_xaxis_transform())
+
+# Mark the 4 map thresholds
+for h in _MAP_HOURS:
+    ax1c.axvline(h, color="#e74c3c", linewidth=1.0, alpha=0.35)
+
+_l1, _lb1 = ax1c.get_legend_handles_labels()
+_l2, _lb2 = ax2c.get_legend_handles_labels()
+ax1c.legend(_l1 + _l2, _lb1 + _lb2, loc="center right", fontsize=9)
+ax1c.set_title("(a)  HAC Percolation — Roman Road Network", fontsize=12, loc="left")
+
+# ── Bottom row: 4 static snapshot maps ────────────────────────────────────
+_subplot_labels = ["(b)", "(c)", "(d)", "(e)"]
+for col, (h, sublabel) in enumerate(zip(_MAP_HOURS, _subplot_labels)):
+    ax_map = fig.add_subplot(gs[1, col])
+
+    edges_4326.plot(ax=ax_map, color="#cccccc", linewidth=0.25, alpha=0.6)
+
+    _clust_h = assign_clusters(comp_results, h * 3600)
+    _nodes = nodes_4326.copy()
+    _nodes["color"] = (
+        _nodes["node_id"]
+        .map(_clust_h)
+        .fillna(-1).astype(int)
+        .map(cluster_color)
+    )
+    _nodes.plot(ax=ax_map, color=_nodes["color"].tolist(), markersize=0.8, alpha=0.85)
+
+    _label = f"{h}h" if h < 48 else f"{h//24}d"
+    _idx   = min(int(np.searchsorted(thresholds, h * 3600, side="left")),
+                 len(n_clusters_arr) - 1)
+    ax_map.set_title(f"{sublabel}  t = {_label}  ({n_clusters_arr[_idx]} clusters)",
+                     fontsize=10, loc="left")
+    ax_map.set_axis_off()
+
+plt.savefig(COMBINED_PDF, dpi=150, bbox_inches="tight")
+plt.close()
+print(f"Combined PDF → {COMBINED_PDF}")
 
 
 # ── CSV ───────────────────────────────────────────────────────────────────────
@@ -463,5 +624,3 @@ for h, col in cluster_cols:
 
 print("─" * 44)
 print(f"Best province match: threshold = {best_col_label}  (ARI = {best_ari:.4f})")
-
-print("\nDone.")

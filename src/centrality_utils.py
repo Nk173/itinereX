@@ -128,6 +128,21 @@ def _legend_html(label: str, score_min: float, score_max: float, color: str) -> 
     """
 
 
+def html_to_pdf(html_path: Path, wait_ms: int = 3000) -> Path:
+    """Render a saved folium HTML map to PDF via a headless Chromium browser."""
+    from playwright.sync_api import sync_playwright
+    pdf_path = html_path.with_suffix(".pdf")
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": 1400, "height": 900})
+        page.goto(html_path.resolve().as_uri())
+        page.wait_for_timeout(wait_ms)
+        page.pdf(path=str(pdf_path), format="A3", landscape=True, print_background=True)
+        browser.close()
+    print(f"PDF saved  → {pdf_path}")
+    return pdf_path
+
+
 def save_map(
     nodes_4326: gpd.GeoDataFrame,
     edges_4326: gpd.GeoDataFrame,
@@ -196,3 +211,4 @@ def save_map(
 
     m.save(str(out_path))
     print(f"Map saved → {out_path}")
+    html_to_pdf(out_path)
