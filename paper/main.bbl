@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -7,40 +7,62 @@
 
 \bibitem[de~Soto et~al.(2025)]{desoto2025itinere}
 Pau de~Soto et~al.
-\newblock Itiner-e: a digital gazetteer and dataset of the {R}oman road network.
+\newblock Itiner-e: a digital gazetteer and dataset of the {R}oman road
+  network.
 \newblock \emph{Scientific Data}, 2025.
 \newblock \url{https://www.nature.com/articles/s41597-025-06140-z}.
 
-\bibitem[Pa\v{z}out et~al.(2026)Pa\v{z}out, Brughmans, de~Soto, Mazzamurro, Coto-Sarmiento, Filet, Herrera~Malatesta, Nielsen, {\O}lgaard, and Vahlstrup]{pazout2026network}
-Adam Pa\v{z}out, Tom Brughmans, Pau de~Soto, Matteo Mazzamurro, Mar\'ia Coto-Sarmiento, C\'eline Filet, Eduardo Herrera~Malatesta, Mette~Louise Nielsen, G\o ril~Eide {\O}lgaard, and Peter~Birkholm Vahlstrup.
-\newblock Network science reveals the structure and lasting impact of the {R}oman road system.
+\bibitem[Pa\v{z}out et~al.(2026)Pa\v{z}out, Brughmans, de~Soto, Mazzamurro,
+  Coto-Sarmiento, Filet, Herrera~Malatesta, Nielsen, {\O}lgaard, and
+  Vahlstrup]{pazout2026network}
+Adam Pa\v{z}out, Tom Brughmans, Pau de~Soto, Matteo Mazzamurro, Mar\'ia
+  Coto-Sarmiento, C\'eline Filet, Eduardo Herrera~Malatesta, Mette~Louise
+  Nielsen, G\o ril~Eide {\O}lgaard, and Peter~Birkholm Vahlstrup.
+\newblock Network science reveals the structure and lasting impact of the
+  {R}oman road system.
 \newblock \emph{Nature Communications}, 2026.
 \newblock In press.
 
 \bibitem[Tobler(1993)]{tobler1993hiking}
 Waldo Tobler.
 \newblock Three presentations on geographical analysis and modeling.
-\newblock Technical Report 93-1, National Center for Geographic Information and Analysis, 1993.
+\newblock Technical Report 93-1, National Center for Geographic Information and
+  Analysis, 1993.
 
 \bibitem[{Ancient World Mapping Center}(2023)]{awmc2023provinces}
 {Ancient World Mapping Center}.
-\newblock {R}oman {E}mpire {AD} 200 provinces, corrected by {A}dam {P}a\v{z}out.
-\newblock \url{https://github.com/AWMC/geodata/tree/master/Cultural-Data/political_shading/roman_empire_ce_200_provinces}, 2023.
+\newblock {R}oman {E}mpire {AD} 200 provinces, corrected by {A}dam
+  {P}a\v{z}out.
+\newblock
+  \url{https://github.com/AWMC/geodata/tree/master/Cultural-Data/political_shading/roman_empire_ce_200_provinces},
+  2023.
 
-\bibitem[Arcaute et~al.(2016)Arcaute, Molinero, Hatna, Murcio, Vargas-Ruiz, Masucci, and Batty]{arcaute2016cities}
-Elsa Arcaute, Carlos Molinero, Erez Hatna, Roberto Murcio, Camilo Vargas-Ruiz, A.~Paolo Masucci, and Michael Batty.
+\bibitem[Arcaute et~al.(2016)Arcaute, Molinero, Hatna, Murcio, Vargas-Ruiz,
+  Masucci, and Batty]{arcaute2016cities}
+Elsa Arcaute, Carlos Molinero, Erez Hatna, Roberto Murcio, Camilo Vargas-Ruiz,
+  A.~Paolo Masucci, and Michael Batty.
 \newblock Cities and regions in {B}ritain through hierarchical percolation.
 \newblock \emph{Royal Society Open Science}, 3:\penalty0 150691, 2016.
 \newblock \doi{10.1098/rsos.150691}.
 
+\bibitem[Molinero et~al.(2017)Molinero, Murcio, and
+  Arcaute]{molinero2017angular}
+Carlos Molinero, Roberto Murcio, and Elsa Arcaute.
+\newblock The angular nature of road networks.
+\newblock \emph{Scientific Reports}, 7:\penalty0 4312, 2017.
+\newblock \doi{10.1038/s41598-017-04477-z}.
+
 \bibitem[Hubert and Arabie(1985)]{hubert1985comparing}
 Lawrence Hubert and Phipps Arabie.
 \newblock Comparing partitions.
-\newblock \emph{Journal of Classification}, 2\penalty0 (1):\penalty0 193--218, 1985.
+\newblock \emph{Journal of Classification}, 2\penalty0 (1):\penalty0 193--218,
+  1985.
 
-\bibitem[Danon et~al.(2005)Danon, D\'iaz-Guilera, Duch, and Arenas]{danon2005comparing}
+\bibitem[Danon et~al.(2005)Danon, D\'iaz-Guilera, Duch, and
+  Arenas]{danon2005comparing}
 Leon Danon, Albert D\'iaz-Guilera, Jordi Duch, and Alex Arenas.
 \newblock Comparing community structure identification.
-\newblock \emph{Journal of Statistical Mechanics: Theory and Experiment}, 2005\penalty0 (09):\penalty0 P09008, 2005.
+\newblock \emph{Journal of Statistical Mechanics: Theory and Experiment},
+  2005\penalty0 (09):\penalty0 P09008, 2005.
 
 \end{thebibliography}

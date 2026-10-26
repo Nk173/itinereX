@@ -41,18 +41,26 @@ currently used as a figure in the paper, and rerunning it needs the full
 - **Methods** (Data, HAC/percolation) and **Results** are filled in, with
   numbers computed directly from `results/HAC/network1-single/data/hac_clusters.csv`
   and `results/HAC/network0-average/` logs/data.
-- §2.1 (Data) is a single paragraph, written in the terse, citation-anchored
-  style of Pažout et al. (2026): no repo paths in the prose (those move to
-  §2.2's naming sentence and to Data accessibility), more detail on the
-  province-boundary source (AWMC AD 200, approximate, clipped to modern
-  coastlines, fine 57-unit vs. coarse 47-unit partition), and the network
-  described as built from the Itiner-e linework and cleaned following the
-  same general procedure as Pažout et al.
-- Two networks, two HAC settings: `network0-average` (calibration, scipy
-  `linkage(..., method="average")`) and `network1-single` (primary, `method="single"`,
-  chosen because it is exactly equivalent to a percolation sweep over the
-  network's own edges). This is spelled out in Methods §2.2 so the two
-  runs' ARI/NMI numbers are never read as directly comparable.
+- §2.1 (Data) and §2.2 (HAC/percolation) are each a single, tight paragraph
+  (plus one short follow-on in §2.2 on the percolation curve), written in
+  the terse, citation-anchored style of Pažout et al. (2026). Neither
+  mentions repo paths or the `network0-average`/`network1-single` labels —
+  those are code/figure-caption/Data-accessibility identifiers, not prose;
+  the text instead says "our own network" and "the calibration network".
+- §2.1 adds detail on the province-boundary source (AWMC AD 200,
+  approximate, clipped to modern coastlines, fine 57-unit vs. coarse
+  47-unit partition) and states plainly that the network is built from the
+  Itiner-e linework and cleaned following the same general procedure as
+  Pažout et al.
+- §2.2 states the single-linkage/percolation equivalence in plain terms
+  first, then cites it to Arcaute et al. (2016) (percolating street
+  intersections by Euclidean distance) and Molinero, Murcio & Arcaute
+  (2017) (percolating roads by relative segment angle) before describing
+  our own application of it to travel time. Two networks, two HAC
+  settings: our own network uses single linkage (exact percolation
+  equivalence); the calibration network inherits average linkage from
+  earlier work and is flagged as not sharing that equivalence, so the two
+  runs' ARI/NMI numbers in Results are never read as directly comparable.
 - §3.1 (network0-average) is framed as a **calibration** check that the
   method can recover a known administrative partition — not as the paper's
   main result. It now includes all three calibration figures: the

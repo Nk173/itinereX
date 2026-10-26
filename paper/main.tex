@@ -129,49 +129,33 @@ are excluded from the alignment scoring in Section~\ref{sec:results}.
 \subsection{Hierarchical agglomerative clustering and percolation}
 \label{sec:hac-method}
 
-We refer to our own network and the calibration network throughout by
-two short labels, \texttt{network1-single} (Section~\ref{sec:primary})
-and \texttt{network0-average} (Section~\ref{sec:validation}), whose
-suffixes record the HAC linkage setting used for each, introduced below
--- this is deliberate, since the two runs are not directly comparable
-without accounting for it.
+Hierarchical clustering under single linkage has a direct reading on a
+weighted network: merging two clusters at the weight of the lightest
+edge joining them means that, at any linkage height $t$, the clusters
+are exactly the network's connected components once every edge heavier
+than $t$ has been removed. Raising $t$ and cutting the dendrogram at
+each height is therefore the same thing as percolating the network
+itself, component by component, rather than clustering points by a
+chosen distance metric. This is the basis of \citet{arcaute2016cities},
+who percolate street intersections in Britain by Euclidean distance to
+recover its regional and urban hierarchy, and of
+\citet{molinero2017angular}, who percolate the roads themselves using
+the relative angle between consecutive segments as the occupation cost.
+We apply the same principle to travel time: within each connected
+component we compute pairwise travel-time distances between nodes and
+use single-linkage HAC, so that cutting the dendrogram at threshold $t$
+recovers exactly the network's own travel-time percolation clusters at
+that threshold. Our calibration network instead uses average linkage,
+inherited from work that predates this percolation framing and kept
+here as a deliberate point of comparison; it does not share the
+guarantee above, so its cluster counts and province-alignment scores in
+Section~\ref{sec:results} are not directly comparable to those of our
+own network.
 
-Following the general approach of \citet{arcaute2016cities}, who use a
-percolation sweep over distance thresholds between street intersections
-to recover the hierarchical regional and urban structure of Britain, we
-apply an equivalent percolation sweep to travel time on the Roman road
-network itself, rather than to Euclidean distance between unconnected
-points.
-
-Within each connected component, we compute pairwise travel-time
-distances between nodes and perform hierarchical agglomerative
-clustering (HAC; \texttt{scipy.cluster.hierarchy.linkage}). For
-\texttt{network1-single} we use \emph{single} linkage: because single
-linkage merges clusters at the weight of the minimum edge connecting
-them, cutting the resulting dendrogram at a travel-time threshold $t$
-reproduces exactly the connected components of the network with all
-edges of weight greater than $t$ removed -- i.e.\ HAC under single
-linkage is mathematically equivalent to a percolation sweep over the
-network's own edges, computed once per component rather than
-independently at every threshold. This equivalence is the reason we
-adopt single linkage for the primary analysis: the resulting clusters
-are, by construction, genuine percolation clusters of the road network,
-not an artefact of a particular clustering criterion.
-
-The calibration network, \texttt{network0-average}, instead uses
-\emph{average} linkage, which clusters by mean pairwise travel time
-between cluster members and does not share the exact percolation
-equivalence described above. This difference predates the present
-analysis and is retained here deliberately, flagged by the
-\texttt{-average}/\texttt{-single} suffixes on each network's directory
-name, so that ARI/NMI values reported for the two networks in
-Section~\ref{sec:results} are never read as directly comparable without
-that caveat in mind.
-
-Sweeping $t$ across the full range of merge heights gives, at each
-threshold: the number of clusters, and the size of the largest cluster
-relative to the network (the percolation curve). We additionally fit a
-power law to the percolation curve over its emergent region.
+Sweeping $t$ across every merge height gives, at each threshold, the
+number of clusters and the size of the largest one relative to the
+network (the percolation curve), to which we fit a power law over its
+emergent region.
 
 \paragraph{Alignment with provinces.}
 At each threshold $t$, we compare the resulting cluster labels to the
