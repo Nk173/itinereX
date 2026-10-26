@@ -6,7 +6,7 @@ Builds a cleaned, analyzable road network graph from the itiner-E road dataset o
 The goal of this repository is to take the source linework (often with near-miss junctions, duplicate endpoints, and degree-2 chains), rebuild a consistent topology, and export a weighted NetworkX graph that can be used for downstream analysis (routing, centrality, “important nodes”, etc.).
 
 This paper is organized around two questions, both posed on the network
-built from the Itiner-e Roman road data \citep{desoto2025itinere}:
+built from the Itiner-e Roman road data:
 
 1. **Can hierarchical agglomerative clustering (HAC) on travel-time distances identify spatial units that emerge from the road network itself?**
 
