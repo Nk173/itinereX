@@ -5,6 +5,18 @@ Builds a cleaned, analyzable road network graph from the itiner-E road dataset o
 
 The goal of this repository is to take the source linework (often with near-miss junctions, duplicate endpoints, and degree-2 chains), rebuild a consistent topology, and export a weighted NetworkX graph that can be used for downstream analysis (routing, centrality, “important nodes”, etc.).
 
+This paper is organized around two questions, both posed on the network
+built from the Itiner-e Roman road data \citep{desoto2025itinere}:
+
+1. **Can hierarchical agglomerative clustering (HAC) on travel-time distances identify spatial units that emerge from the road network itself?**
+
+   We use percolation-equivalent HAC to cluster the network at every travel-time threshold, calibrate the approach against a known partition, and then apply it to our own network to see what clusters it produces on its own terms.
+
+2. **Are the spatial units that emerge significant, or are they artefacts of the network's own construction?**
+
+   A cluster can look like a coherent region without reflecting anything beyond the geometry and density of the digitized road network it was built from. Answering this requires comparing the clusters obtained on the real network against the same procedure run on spatial and temporal null models of that network—i.e., networks that share its nodes and broad connectivity but not whatever structure actually produces the clustering.
+   
+
 ## What this repo produces
 
 - An interactive **before/after** visualization of the network cleaning.
@@ -175,6 +187,7 @@ is lossless for the analysis). Endpoint snapping at 1 cm (EPSG:3395).
 
 ![HAC Percolation](results/HAC/network0-average/maps/hac_percolation_combined.png)
 ![Province Alignment Curve](results/HAC/network0-average/maps/province_alignment_curve.png)
+![Province Match 78.2 hrs](results/HAC/network0-average/maps/province_match_78.2h.png)
 
 
 ## Spatial Null Models
@@ -279,3 +292,21 @@ These refreshed null-model HAC scaling fits are saved in `data/processed/hac_nul
     </td>
   </tr>
 </table>
+
+
+## To Do
+1. **Road network metrics and economic complexity**
+   - Compare road network metrics against updated and improved economic complexity indicators to investigate potential relationships between infrastructure organisation and economic development.
+
+2. **Multiscale edge density in empirical and null networks**
+   - The null models produce significantly more edges than the empirical network. Perform spatial node aggregation at progressively coarser scales (e.g., towns, cities, provinces) on both the empirical and null networks.
+   - Compare the number of edges at each scale to identify where the excess connectivity in the null models originates. This will help determine whether the differences arise primarily from local, regional, or long-distance connections.
+
+3. **Minimum triangle angles and road redundancy**
+   - Examine the distribution of the smallest interior angles of triangles formed by roads in the empirical network.
+   - Investigate whether there is a characteristic minimum angle below which an additional road becomes redundant. When two roads diverge at a very small angle, they may provide nearly identical connectivity, making the construction of both unnecessary.
+   - This could help identify geometric constraints or implicit efficiency principles underlying Roman road construction.
+
+4. **Entropy of cluster sizes**
+   - Calculate the Shannon entropy of the cluster-size distribution across different HAC thresholds.
+   - Identify the threshold at which entropy peaks and investigate whether this corresponds to a meaningful spatial scale or transition in the network's hierarchical organisation.
