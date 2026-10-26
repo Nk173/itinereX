@@ -61,6 +61,14 @@ currently used as a figure in the paper, and rerunning it needs the full
   equivalence); the calibration network inherits average linkage from
   earlier work and is flagged as not sharing that equivalence, so the two
   runs' ARI/NMI numbers in Results are never read as directly comparable.
+- §2.2's "Alignment with provinces" paragraph is down to one sentence:
+  score clusters against province labels with the Adjusted Rand Index,
+  find the threshold where that's strongest. Dropped the NMI definition,
+  the exhaustive-merge-height search description, and the bootstrap-CI
+  method — those are still reported as findings in Results (Table 1, the
+  77h/31.8h peaks, the bootstrap CIs), just not pre-explained in Methods.
+  Normalized Mutual Information (Danon et al., 2005) consequently dropped
+  out of the bibliography, since it's no longer cited anywhere in the text.
 - §3.1 (network0-average) is framed as a **calibration** check that the
   method can recover a known administrative partition — not as the paper's
   main result. It now includes all three calibration figures: the

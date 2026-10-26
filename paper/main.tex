@@ -158,18 +158,10 @@ network (the percolation curve), to which we fit a power law over its
 emergent region.
 
 \paragraph{Alignment with provinces.}
-At each threshold $t$, we compare the resulting cluster labels to the
-province labels of the nodes with a known province assignment, using
-the Adjusted Rand Index \citep[ARI;][]{hubert1985comparing} and
-Normalized Mutual Information \citep[NMI;][]{danon2005comparing}. ARI
-ranges from 0 (random partition) to 1 (perfect agreement, up to cluster
-relabelling); NMI ranges from 0 to 1 and does not penalize a finer
-partition as harshly as ARI. We search exhaustively over every distinct
-merge height for the threshold that maximizes ARI against the
-provinces, and estimate a 95\% confidence interval on that best ARI (and
-on the threshold it occurs at) by bootstrap resampling nodes with
-replacement and re-selecting, for each resample, the best-scoring
-threshold among those closest to the full-data optimum.
+At each threshold $t$, we score the resulting clusters against the
+province labels of nodes with a known province assignment using the
+Adjusted Rand Index \citep[ARI;][]{hubert1985comparing}, and identify
+the travel-time threshold at which this alignment is strongest.
 
 \section{Results}
 \label{sec:results}

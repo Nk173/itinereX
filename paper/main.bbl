@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -57,12 +57,5 @@ Lawrence Hubert and Phipps Arabie.
 \newblock Comparing partitions.
 \newblock \emph{Journal of Classification}, 2\penalty0 (1):\penalty0 193--218,
   1985.
-
-\bibitem[Danon et~al.(2005)Danon, D\'iaz-Guilera, Duch, and
-  Arenas]{danon2005comparing}
-Leon Danon, Albert D\'iaz-Guilera, Jordi Duch, and Alex Arenas.
-\newblock Comparing community structure identification.
-\newblock \emph{Journal of Statistical Mechanics: Theory and Experiment},
-  2005\penalty0 (09):\penalty0 P09008, 2005.
 
 \end{thebibliography}
