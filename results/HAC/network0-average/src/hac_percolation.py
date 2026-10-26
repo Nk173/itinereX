@@ -4,14 +4,14 @@ hac_percolation.py  (paper-network version)
 Hierarchical Agglomerative Clustering on intra-component travel-time distances,
 swept across all merge-height thresholds -> percolation structure of the Roman
 road network AS BUILT IN THE MANUSCRIPT (Tobler travel time, Itiner-e export,
-AWMC AD200 provinces).  This is the paper_replication counterpart of
+AWMC AD200 provinces).  This is the network0-average counterpart of
 ../../src/hac_percolation.py; it changes only the input graph and the travel-time
 model, not the method.
 
 Inputs
-  paper_replication/data/network_paper.pkl   (from build_network.py)
+  network0-average/data/network_paper.pkl   (from build_network.py)
 
-Outputs (paper_replication/maps/ and paper_replication/data/)
+Outputs (network0-average/maps/ and network0-average/data/)
   maps/hac_percolation_curve.png
   maps/hac_percolation_combined.pdf
   maps/hac_dendrogram_comp{i}.png
@@ -20,7 +20,7 @@ Outputs (paper_replication/maps/ and paper_replication/data/)
   stdout: province-alignment ARI / NMI table + bootstrap CI on the best threshold
 
 Usage (from repo root):
-  /Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/hac_percolation.py
+  /Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/hac_percolation.py
 """
 
 from __future__ import annotations

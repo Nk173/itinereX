@@ -6,8 +6,8 @@ with a configurable set of snapshot maps in the bottom row.
 Default snapshots: 24 h, 48 h, 77 h (best province-alignment threshold), 5 d.
 
 Usage:
-  /Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/plot_combined.py
-  /Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/plot_combined.py 12 24 77 168
+  /Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/plot_combined.py
+  /Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/plot_combined.py 12 24 77 168
 """
 from __future__ import annotations
 import sys, pickle

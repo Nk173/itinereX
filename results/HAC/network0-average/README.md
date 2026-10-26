@@ -1,4 +1,4 @@
-# paper_replication/
+# network0-average/
 
 Self-contained re-run of the itinereX HAC / travel-time percolation analysis on
 the **exact network analysed in the manuscript**
@@ -18,7 +18,7 @@ flat 2 km/h travel-time model. To make the HAC / percolation results directly
 comparable to (and citable alongside) the manuscript, this folder rebuilds the
 graph the way the manuscript does and re-runs the same method on top.
 
-| | main repo (`../src`) | here (`paper_replication`) |
+| | main repo (`../src`) | here (`network0-average`) |
 |---|---|---|
 | Network | own cleaning of raw Itiner-e (8,460 n / 12,849 e / 12 comp) | manuscript's Itiner-e export, endpoint-noded (10,506 n / 14,770 e / 13 comp) |
 | Travel time | flat 2 km/h on Mercator planar length | **Tobler's hiking function** on `Avg_Slope`, `LENGTH_GEO` (geodesic) |
@@ -41,8 +41,8 @@ maps/                     figures
 Runs under the `MIR` conda env (geopandas 1.1.3, networkx 3.4.2, scipy, scikit-learn):
 
 ```
-/Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/build_network.py
-/Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/hac_percolation.py
+/Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/build_network.py
+/Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/hac_percolation.py
 ```
 
 `build_network.py` runs in seconds. `hac_percolation.py` takes ~10–15 min (the

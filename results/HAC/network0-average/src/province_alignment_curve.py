@@ -14,12 +14,12 @@ provinces (from the cloned repo) with:
 Scored twice: against the 58 fine units (Italian regiones separate) and against
 the coarse set (regiones + Roma merged into "Italia").
 
-Outputs (paper_replication/):
+Outputs (network0-average/):
   data/province_alignment.csv           threshold_h, n_clusters, ari/nmi/... (fine + coarse)
   maps/province_alignment_curve.png     ARI + NMI vs threshold, peak marked
 
 Usage:
-  /Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/province_alignment_curve.py
+  /Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/province_alignment_curve.py
 """
 from __future__ import annotations
 import pickle

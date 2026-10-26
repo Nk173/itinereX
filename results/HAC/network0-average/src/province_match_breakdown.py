@@ -18,7 +18,7 @@ Outputs:
   maps/province_match_<t>h.png    horizontal bar chart of F1, coloured by regime
 
 Usage:
-  /Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/province_match_breakdown.py [threshold_hours]
+  /Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/province_match_breakdown.py [threshold_hours]
 """
 from __future__ import annotations
 import sys, pickle

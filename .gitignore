@@ -4,18 +4,18 @@
 .claude/settings.local.json
 
 # Generated caches (large, reproducible)
-results/HAC/data/hac_linkage_cache.pkl
-results/HAC/data/hac_linkage_single_cache.pkl
+results/HAC/network1-single/data/hac_linkage_cache.pkl
+results/HAC/network1-single/data/hac_linkage_single_cache.pkl
 __pycache__/
 
 # Generated map outputs (large HTML/interactive files, reproducible)
 maps/*.html
 
-# paper_replication: cloned upstream repo + large generated artefacts
-results/HAC/paper_replication/roman-road-networks/
-results/HAC/paper_replication/data/*.pkl
-results/HAC/paper_replication/data/*.gpkg
-results/HAC/paper_replication/hac_run.log
+# network0-average: cloned upstream repo + large generated artefacts
+results/HAC/network0-average/roman-road-networks/
+results/HAC/network0-average/data/*.pkl
+results/HAC/network0-average/data/*.gpkg
+results/HAC/network0-average/hac_run.log
 
 # Large generated outputs (regenerable from data_cleaning/ and results/ scripts)
 data_cleaning/cleaned_data/*.pkl
@@ -23,7 +23,7 @@ data_cleaning/cleaned_data/rrn_edges.geojson
 data_cleaning/cleaned_data/crossing_edges.geojson
 results/Null-models/data/processed/*.pkl
 results/Null-models/data/processed/hac_null_analysis/*/*.pkl
-results/HAC/maps/*.pdf
+results/HAC/network1-single/maps/*.pdf
 maps/roads_all_provinces.html.zip
 
 # LaTeX build artefacts (main.bbl and main.pdf are committed deliberately)

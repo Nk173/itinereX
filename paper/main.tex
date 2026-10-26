@@ -22,8 +22,8 @@
 \usepackage{caption}
 \usepackage{todonotes}
 
-\title{Hierarchical percolation of travel time recovers the provincial
-  structure of the Roman road network}
+\title{Hierarchical percolation of travel time reveals spatial structure
+  in the Roman road network}
 
 \author[1]{Nishanth Kumar}
 \affil[1]{[Affiliation -- to be completed]}
@@ -36,22 +36,28 @@
 
 \begin{abstract}
 We apply hierarchical agglomerative clustering (HAC) on travel-time
-distances -- mathematically equivalent to a percolation sweep over the
-network's edges -- to the Roman road network, and ask whether the
-clusters that emerge at different travel-time thresholds recover the
-Roman provinces. We first validate the method on the exact network and
-travel-time model used in a recent large-scale reconstruction of the
-Roman road system, recovering the provincial partition with an Adjusted
-Rand Index (ARI) of 0.70 (bootstrap 95\% CI [0.68, 0.71]) at a threshold
-of $\sim$77 hours ($\sim$3.2 days) of travel. We then apply the same
-method to our own independently cleaned network under a simpler,
-constant-speed travel-time model, where the provincial alignment is
-weaker (ARI = 0.43, 95\% CI [0.43, 0.45]) and peaks at a shorter
-travel-time scale ($\sim$25--32 hours). Together these results indicate
-that administrative provincial boundaries of the Roman Empire left a
-recoverable, threshold-dependent signature in the connectivity structure
-of its road network, and that the strength of that signature is
-sensitive to the travel-time model used to weight the network.
+distances -- under single linkage, mathematically equivalent to a
+percolation sweep over the network's own edges -- to the Roman road
+network, with the aim of recovering spatial units of interest directly
+from network connectivity rather than from imposed administrative
+boundaries. Before turning to our own network, we calibrate the method
+on the exact network and travel-time model used in a recent large-scale
+reconstruction of the Roman road system, and show that it recovers that
+network's Roman provinces with an Adjusted Rand Index (ARI) of 0.70
+(bootstrap 95\% CI [0.68, 0.71]) at a threshold of $\sim$77 hours
+($\sim$3.2 days) of travel -- confirming that the method can recover a
+known administrative partition when one exists in the data. We then
+apply the same percolation-equivalent clustering to our own,
+independently constructed network of the Roman road system, where the
+goal is not to reproduce this calibration result but to characterize
+the emergent spatial units the network itself suggests. A first,
+coarse benchmark against the Roman provinces on this network gives a
+markedly weaker alignment (ARI $\approx 0.43$) with a less sharply
+defined optimal threshold, which we read not as a replication failure
+but as a signal that provincial administration is only one of several
+candidate organizing principles the clustering may be picking up --
+motivating a closer characterization of these units, and a comparison
+against spatial/temporal null models, as the next step of this work.
 \end{abstract}
 
 \section{Introduction}
@@ -61,26 +67,34 @@ sensitive to the travel-time model used to weight the network.
 
 \subsection{Data}
 
-\paragraph{Road network.}
-The primary network is built from the raw Itiner-e linework
-\citep{desoto2025itinere}. Near-miss junctions and duplicate endpoints
-are snapped, the linework is noded, and degree-2 chains are simplified,
-giving a weighted graph of 8{,}460 nodes and 12{,}849 edges across 12
-connected components (see \texttt{data\_cleaning/} in the accompanying
-repository). Edge weights are travel times computed from edge length
-at a constant walking speed of 2~km/h.
+We work with two networks, referred to throughout by the names of the
+directories holding their analysis in the accompanying repository:
+\texttt{network1-single} (our own network; Section~\ref{sec:primary}) and
+\texttt{network0-average} (the calibration network; Section~\ref{sec:validation}).
+The name suffixes record the HAC linkage setting used for each (see
+Section~\ref{sec:hac-method}) -- this is deliberate, since the two runs
+are not directly comparable without accounting for it.
 
-\paragraph{Validation network.}
-To check that our results are not an artefact of our own cleaning
-pipeline or travel-time model, we separately replicate the analysis on
-the exact Itiner-e export and endpoint-noded topology used by
-\citet{pazout2026network} (10{,}506 nodes, 14{,}770 edges, 13 connected
-components, including ferry links across the Bosporus and the
-Dardanelles), with travel time computed from Tobler's hiking function
-\citep{tobler1993hiking} applied to slope and geodesic edge length. This
-self-contained replication is kept in
-\texttt{results/HAC/paper\_replication/} and does not otherwise modify
-the primary analysis.
+\paragraph{network1-single: the itinereX network (primary).}
+Built from the raw Itiner-e linework \citep{desoto2025itinere}. Near-miss
+junctions and duplicate endpoints are snapped, the linework is noded, and
+degree-2 chains are simplified, giving a weighted graph of 8{,}460 nodes
+and 12{,}849 edges across 12 connected components (see
+\texttt{data\_cleaning/} in the accompanying repository). Edge weights
+are travel times computed from edge length at a constant walking speed
+of 2~km/h.
+
+\paragraph{network0-average: the calibration network.}
+To check that the method can recover a known administrative partition
+before applying it to our own network, we separately run the same
+general approach on the exact Itiner-e export and endpoint-noded
+topology used by \citet{pazout2026network} (10{,}506 nodes, 14{,}770
+edges, 13 connected components, including ferry links across the
+Bosporus and the Dardanelles), with travel time computed from Tobler's
+hiking function \citep{tobler1993hiking} applied to slope and geodesic
+edge length. This self-contained calibration run is kept in
+\texttt{results/HAC/network0-average/} and does not otherwise modify the
+primary analysis.
 
 \paragraph{Province boundaries.}
 Both networks are overlaid with the Ancient World Mapping Center's
@@ -94,6 +108,7 @@ assigned to any province, are excluded from the alignment scoring
 described below.
 
 \subsection{Hierarchical agglomerative clustering and percolation}
+\label{sec:hac-method}
 
 Following the general approach of \citet{arcaute2016cities}, who use a
 percolation sweep over distance thresholds between street intersections
@@ -104,14 +119,28 @@ points.
 
 Within each connected component, we compute pairwise travel-time
 distances between nodes and perform hierarchical agglomerative
-clustering (HAC) using single linkage. Because single linkage merges
-clusters at the weight of the minimum edge connecting them, cutting the
-resulting dendrogram at a travel-time threshold $t$ reproduces exactly
-the connected components of the network with all edges of weight
-greater than $t$ removed -- i.e.\ HAC under single linkage is
-mathematically equivalent to a percolation sweep over the network's
-edges, computed once per component rather than independently at every
-threshold.
+clustering (HAC; \texttt{scipy.cluster.hierarchy.linkage}). For
+\texttt{network1-single} we use \emph{single} linkage: because single
+linkage merges clusters at the weight of the minimum edge connecting
+them, cutting the resulting dendrogram at a travel-time threshold $t$
+reproduces exactly the connected components of the network with all
+edges of weight greater than $t$ removed -- i.e.\ HAC under single
+linkage is mathematically equivalent to a percolation sweep over the
+network's own edges, computed once per component rather than
+independently at every threshold. This equivalence is the reason we
+adopt single linkage for the primary analysis: the resulting clusters
+are, by construction, genuine percolation clusters of the road network,
+not an artefact of a particular clustering criterion.
+
+The calibration network, \texttt{network0-average}, instead uses
+\emph{average} linkage, which clusters by mean pairwise travel time
+between cluster members and does not share the exact percolation
+equivalence described above. This difference predates the present
+analysis and is retained here deliberately, flagged by the
+\texttt{-average}/\texttt{-single} suffixes on each network's directory
+name, so that ARI/NMI values reported for the two networks in
+Section~\ref{sec:results} are never read as directly comparable without
+that caveat in mind.
 
 Sweeping $t$ across the full range of merge heights gives, at each
 threshold: the number of clusters, and the size of the largest cluster
@@ -133,12 +162,17 @@ replacement and re-selecting, for each resample, the best-scoring
 threshold among those closest to the full-data optimum.
 
 \section{Results}
+\label{sec:results}
 
-\subsection{Validation on the manuscript's network (first result)}
+\subsection{Calibration: recovering a known administrative partition
+  (network0-average)}
 \label{sec:validation}
 
-Figure~\ref{fig:paper_replication} shows the percolation curve and
-snapshot cluster maps for the validation network of
+Before asking what spatial units our own network suggests, we first
+check that the method is capable of recovering a known partition at
+all, on a network and travel-time model we did not build ourselves.
+Figure~\ref{fig:network0} shows the percolation curve and
+snapshot cluster maps for the calibration network of
 \citet{pazout2026network}, with Tobler-function travel times and AWMC
 provinces (10{,}430 of 10{,}506 nodes have a known province).
 
@@ -149,9 +183,9 @@ again as clusters grow beyond provincial scale.
 
 \begin{table}[h]
 \centering
-\caption{Province alignment at fixed travel-time snapshots, validation
-  network (\citet{pazout2026network}, Tobler-function travel time;
-  $n=10{,}430$ nodes with known province).}
+\caption{Province alignment at fixed travel-time snapshots, calibration
+  network (network0-average; \citet{pazout2026network}, Tobler-function
+  travel time; $n=10{,}430$ nodes with known province).}
 \label{tab:validation}
 \begin{tabular}{lrrr}
 \toprule
@@ -176,78 +210,75 @@ Roman provincial map.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{figures/fig1_paper_replication_percolation.pdf}
-\caption{Percolation curve and snapshot cluster maps for the validation
-  network (\texttt{results/HAC/paper\_replication/maps/hac\_percolation\_combined.pdf}).}
-\label{fig:paper_replication}
+\includegraphics[width=\textwidth]{figures/fig1_network0-average_percolation.pdf}
+\caption{Percolation curve and snapshot cluster maps for the calibration
+  network (\texttt{results/HAC/network0-average/maps/hac\_percolation\_combined.pdf}).}
+\label{fig:network0}
 \end{figure}
 
-\subsection{Percolation structure of the itinereX network (primary result)}
+\subsection{Towards emergent spatial units in the itinereX network
+  (network1-single)}
 \label{sec:primary}
 
-Figure~\ref{fig:primary} shows the same analysis applied to our own
-independently cleaned network, with constant-speed (2~km/h) travel
-times (8{,}411 of 8{,}452 clustered nodes have a known province, across
-56 represented provinces).
+Having confirmed in Section~\ref{sec:validation} that percolation-equivalent
+HAC can recover a known administrative partition when one is present, we
+turn to the question this paper is actually about: what spatial units does
+the itinereX network itself suggest, under its own independently built
+topology and a simple constant-speed (2~km/h) travel-time model? This is
+not a replication of Section~\ref{sec:validation} -- we are not trying to
+reproduce its ARI on a different network, and treating the comparison that
+way would misread what each run is for. Section~\ref{sec:validation}
+establishes that the method works; this section applies it, for the first
+time, to a network nobody has clustered before, with the goal of
+characterizing the clusters themselves as candidate spatial units, of
+which provincial alignment is only one possible interpretation among
+several worth testing.
 
-Table~\ref{tab:primary} reports the same six snapshots. As in
-Section~\ref{sec:validation}, alignment is weak at sub-day thresholds
-and improves markedly by 24 hours, but here it falls away again by 2
-days rather than continuing to improve through the 1--3 day range.
+As a first, coarse orientation, we benchmarked the resulting clusters
+against the Roman provinces using the same ARI/NMI procedure as
+Section~\ref{sec:validation}: an exhaustive search over every merge height
+gives a best alignment of ARI $= 0.433$ (NMI $= 0.763$, 291 clusters) at
+$t \approx 31.8$ hours, with a second, comparably good local optimum
+around 25 hours rather than the single sharp peak seen in
+Section~\ref{sec:validation} (95\% bootstrap CI on ARI $[0.426, 0.448]$;
+on the threshold, $[24.8, 31.8]$ hours). We do not read this as a weaker
+version of Section~\ref{sec:validation}'s result -- on a network built
+under a different travel-time model, with its own topology, there is no
+reason to expect the same number -- but as a preliminary signal that
+provincial administration is detectable in, without fully explaining, the
+clusters this network produces. We have deliberately not built a figure
+or table around this number here: a single province-alignment statistic
+does not do justice to what the clusters at each threshold actually look
+like, and a closer, better-presented look at them is needed before drawing
+conclusions from it.
 
-\begin{table}[h]
-\centering
-\caption{Province alignment at fixed travel-time snapshots, primary
-  itinereX network (constant 2~km/h travel time; $n=8{,}411$ nodes with
-  known province).}
-\label{tab:primary}
-\begin{tabular}{lrrr}
-\toprule
-Snapshot & Clusters & ARI & NMI \\
-\midrule
-6 h   & 4{,}455 & 0.029 & 0.615 \\
-12 h  & 2{,}464 & 0.135 & 0.666 \\
-24 h  & 652     & 0.418 & 0.753 \\
-2 d   & 76      & 0.048 & 0.395 \\
-7 d   & 8       & 0.018 & 0.209 \\
-12 d  & 7       & 0.017 & 0.199 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-An exhaustive search over every merge height finds the best alignment at
-$t = 31.8$ hours, with ARI $= 0.433$ (NMI $= 0.763$, 291 clusters),
-95\% bootstrap CI on ARI of $[0.426, 0.448]$. Unlike the single sharp
-peak found in Section~\ref{sec:validation}, the alignment curve here has
-two nearby local maxima of comparable height, around 25 and 32 hours;
-bootstrap resamples select between them, giving a wider 95\% CI on the
-optimal threshold of $[24.8, 31.8]$ hours. The best achievable alignment
-with the provinces (ARI $\approx 0.43$) is substantially weaker than the
-$\approx 0.70$ recovered on the validation network of
-Section~\ref{sec:validation}.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{figures/fig2_itinerex_percolation.png}
-\caption{Percolation curve and snapshot cluster maps for the primary
-  itinereX network
-  (\texttt{results/HAC/maps/hac\_percolation\_combined.pdf}).}
-\label{fig:primary}
-\end{figure}
+\paragraph{What we take this to mean.}
+The more interesting question this result raises is not ``why is the ARI
+lower here'', but what the two comparable local optima, and the clusters
+themselves, actually correspond to -- whether that is a different,
+non-provincial regionalization of the network (e.g.\ against the Pleiades
+regions already attached to this network's nodes), a boundary effect of
+the constant-speed travel-time model, or a genuine feature of the
+network's own topology. Distinguishing between these is the purpose of
+comparing this run against the spatial/temporal null models in
+\texttt{results/Null-models/}, which is ongoing work and not yet part of
+this manuscript.
 
 \section{Discussion}
 \todo[inline]{Discussion placeholder -- to be completed. Note for later:
-  the gap between the validation network's ARI ($\approx$0.70) and the
-  primary network's ARI ($\approx$0.43) is a candidate finding worth
-  developing -- it may reflect the travel-time model (Tobler hiking
-  function vs.\ constant speed) rather than the underlying network
-  topology, which could be tested using the spatial/temporal null models
-  in \texttt{results/Null-models/}.}
+  the calibration run (Section~\ref{sec:validation}) establishes the
+  method works; the open question for network1-single is what its
+  emergent clusters represent, which needs (i) a proper figure/table once
+  the clusters have had a closer look, and (ii) comparison against the
+  null models in \texttt{results/Null-models/} to separate a genuine
+  topological signal from an artefact of the constant-speed travel-time
+  model.}
 
 \section*{Data accessibility}
 All code and data underlying this analysis are available in the
-accompanying repository, under \texttt{results/HAC/} (primary analysis)
-and \texttt{results/HAC/paper\_replication/} (validation analysis).
+accompanying repository, under \texttt{results/HAC/network1-single/}
+(primary analysis) and \texttt{results/HAC/network0-average/}
+(calibration analysis).
 
 \section*{Authors' contributions}
 \todo[inline]{To be completed.}

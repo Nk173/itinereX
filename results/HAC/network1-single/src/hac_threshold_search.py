@@ -19,7 +19,7 @@ Strategy
 Output: printed summary only.
 
 Usage (from repo root):
-  python results/HAC/src/hac_threshold_search.py
+  python results/HAC/network1-single/src/hac_threshold_search.py
 """
 
 import pickle
@@ -29,8 +29,8 @@ from pathlib import Path
 from scipy.cluster.hierarchy import fcluster
 from sklearn.metrics import adjusted_rand_score
 
-CACHE_PATH   = Path("results/HAC/data/hac_linkage_cache.pkl")
-CLUSTERS_CSV = Path("results/HAC/data/hac_clusters.csv")
+CACHE_PATH   = Path("results/HAC/network1-single/data/hac_linkage_single_cache.pkl")
+CLUSTERS_CSV = Path("results/HAC/network1-single/data/hac_clusters.csv")
 N_BOOTSTRAP  = 500
 SEED         = 42
 CI_LEVEL     = 95  # percent

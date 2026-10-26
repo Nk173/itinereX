@@ -25,19 +25,20 @@ results/
                      github.com/hayaalmuhanna/Roman-Provinces-ECI (CC BY-SA 4.0)
 reference/           Source papers, province boundaries, and bibliography used across analyses
 notebooks/           Exploratory notebooks
-docs/                GitHub Pages site (interactive maps)
+maps/                Map outputs, incl. the GitHub Pages site (index.html + schematics)
+paper/               Draft manuscript (results/HAC, targeting Royal Society Open Science)
 ```
 
 See `results/HAC/README.md` and `results/Null-models/README.md` for those analyses specifically.
 
 ## Cleaning schematic
 
-![Network cleaning schematics](docs/itinere_network_cleaning_schematics.png)
+![Network cleaning schematics](maps/itinere_network_cleaning_schematics.png)
 
 ## Interactive map
 Open the hosted map on GitHub Pages:
 
-[![Cleaned network (interactive)](docs/roads_after_cleaning.png)](https://nk173.github.io/itinereX/roads_after_cleaning.html)
+[![Cleaned network (interactive)](maps/roads_after_cleaning.png)](https://nk173.github.io/itinereX/roads_after_cleaning.html)
 
 - Map: https://nk173.github.io/itinereX/roads_after_cleaning.html
 
@@ -53,7 +54,7 @@ The notebook also overlays Roman provinces (from `reference/provinces/provinces.
 
 **Interactive province map**
 
-[![Provinces + roads + nodes (interactive)](docs/roads_with_provinces_nodes.png)](https://nk173.github.io/itinereX/roads_with_provinces_nodes.html)
+[![Provinces + roads + nodes (interactive)](maps/roads_with_provinces_nodes.png)](https://nk173.github.io/itinereX/roads_with_provinces_nodes.html)
 
 - Map: https://nk173.github.io/itinereX/roads_with_provinces_nodes.html
 

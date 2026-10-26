@@ -6,12 +6,12 @@ the Roman road system" (Sci. Data resubmission 2025), so that downstream HAC /
 percolation analysis runs on the *same* graph the manuscript analyses.
 
 Source data (cloned, untouched):
-  paper_replication/roman-road-networks/data/roman_roads/roman_roads.shp
+  network0-average/roman-road-networks/data/roman_roads/roman_roads.shp
       – the Itiner-e export used by the manuscript. 14,901 LineString segments,
         already split at intersections, in EPSG:3395. Carries the pre-computed
         fields the manuscript uses:  LENGTH_GEO (geodesic length, m) and
         Avg_Slope (mean slope along the segment, %).
-  paper_replication/roman-road-networks/data/roman_provinces_simple/roman_provinces.shp
+  network0-average/roman-road-networks/data/roman_provinces_simple/roman_provinces.shp
       – AWMC "Roman Empire AD 200" provinces (+ Italian regiones), EPSG:4326,
         corrected by A. Pažout 2023.
 
@@ -35,13 +35,13 @@ single fastest one (min time_s); 2 zero-length segments are dropped. This yields
 10,506 nodes / 14,770 edges / 13 components  (manuscript: 10,516 / 14,901 / 13 –
 the small deltas are the dropped self-loops and collapsed parallels).
 
-Outputs (paper_replication/data/):
+Outputs (network0-average/data/):
   network_paper.gpkg         – nodes + edges as GeoDataFrames (EPSG:4326)
   network_paper.pkl          – dict: nx.Graph + node/edge tables + id maps
                                (same shape centrality_utils.load_graph expects)
 
 Usage (from repo root):
-  /Users/nk821/opt/anaconda3/envs/MIR/bin/python paper_replication/src/build_network.py
+  /Users/nk821/opt/anaconda3/envs/MIR/bin/python network0-average/src/build_network.py
 """
 
 from __future__ import annotations
@@ -55,7 +55,7 @@ import networkx as nx
 from shapely.geometry import Point, LineString
 
 # ── Paths ────────────────────────────────────────────────────────────────────
-ROOT      = Path(__file__).resolve().parents[1]          # paper_replication/
+ROOT      = Path(__file__).resolve().parents[1]          # network0-average/
 CLONE     = ROOT / "roman-road-networks"
 ROADS_SHP = CLONE / "data/roman_roads/roman_roads.shp"
 PROV_SHP  = CLONE / "data/roman_provinces_simple/roman_provinces.shp"

@@ -8,7 +8,7 @@ components have no path between them and cannot share a cluster). The linkage
 matrix from each component encodes the full merge history, so the threshold
 sweep is just repeated cheap cuts — no re-running of HAC.
 
-Outputs (results/HAC/maps/ and results/HAC/data/):
+Outputs (results/HAC/network1-single/maps/ and results/HAC/network1-single/data/):
   maps/hac_dendrogram_comp{i}.png  – dendrogram per connected component
   maps/hac_snapshot_low.html       – many clusters (early merges, local structure)
   maps/hac_snapshot_crit.html      – estimated critical threshold
@@ -17,7 +17,7 @@ Outputs (results/HAC/maps/ and results/HAC/data/):
   data/hac_clusters.csv            – node_id, province, component, cluster at each snapshot
 
 Usage (from repo root):
-  python results/HAC/src/hac_percolation.py
+  python results/HAC/network1-single/src/hac_percolation.py
 """
 
 import pickle
@@ -38,19 +38,22 @@ from pathlib import Path
 from collections import Counter
 
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))  # itinereX/src, for centrality_utils
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "src"))  # itinereX/src, for centrality_utils
 from centrality_utils import load_graph, node_province_map, html_to_pdf
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-OUT_CURVE  = Path("results/HAC/maps/hac_percolation_curve.png")
-OUT_CSV       = Path("results/HAC/data/hac_clusters.csv")
-CACHE_PATH    = Path("results/HAC/data/hac_linkage_average_cache.pkl")
+OUT_CURVE  = Path("results/HAC/network1-single/maps/hac_percolation_curve.png")
+OUT_CSV       = Path("results/HAC/network1-single/data/hac_clusters.csv")
+CACHE_PATH    = Path("results/HAC/network1-single/data/hac_linkage_single_cache.pkl")
 
-# Average linkage makes no Euclidean assumptions — appropriate for network
-# travel-time distances. Ward is mathematically valid here too but assumes
-# the distance space is approximately Euclidean.
-LINKAGE_METHOD = "average"
-# LINKAGE_METHOD = "single"
+# Single linkage: cutting the dendrogram at height t reproduces exactly the
+# network's connected components with all edges > t removed, i.e. HAC under
+# single linkage is mathematically equivalent to a percolation sweep over the
+# network's own edges. (Average linkage, used in network0-average, instead
+# clusters by mean pairwise travel time and makes no such percolation
+# equivalence claim — see results/HAC/README.md for the comparison.)
+LINKAGE_METHOD = "single"
+# LINKAGE_METHOD = "average"
 
 
 # ── Load ──────────────────────────────────────────────────────────────────────
@@ -503,7 +506,7 @@ for h, t_s in SNAPSHOTS:
 
 # ── Combined PDF: percolation curve + 4 static snapshot maps ──────────────────
 print("\nSaving combined PDF figure...")
-COMBINED_PDF = Path("results/HAC/maps/hac_percolation_combined.pdf")
+COMBINED_PDF = Path("results/HAC/network1-single/maps/hac_percolation_combined.pdf")
 _MAP_HOURS = [6, 12, 24, 48]   # 6h, 24h, 10d, 42d
 
 fig = plt.figure(figsize=(20, 11))

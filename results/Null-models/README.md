@@ -3,7 +3,7 @@
 Spatial/temporal null models for the Roman road network: alternative graphs
 built on the same node set under purely geometric or temporal connection
 rules, used as a baseline to judge whether the empirical network's structure
-(e.g. its [[HAC]] percolation / province alignment) is more than what
+(e.g. its HAC percolation / province alignment, see `results/HAC/`) is more than what
 geography alone would produce.
 
 ## Provenance
