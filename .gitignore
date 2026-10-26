@@ -16,3 +16,12 @@ results/HAC/paper_replication/roman-road-networks/
 results/HAC/paper_replication/data/*.pkl
 results/HAC/paper_replication/data/*.gpkg
 results/HAC/paper_replication/hac_run.log
+
+# Large generated outputs (regenerable from data_cleaning/ and results/ scripts)
+data_cleaning/cleaned_data/*.pkl
+data_cleaning/cleaned_data/rrn_edges.geojson
+data_cleaning/cleaned_data/crossing_edges.geojson
+results/Null-models/data/processed/*.pkl
+results/Null-models/data/processed/hac_null_analysis/*/*.pkl
+results/HAC/maps/*.pdf
+maps/roads_all_provinces.html.zip
