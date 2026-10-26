@@ -32,6 +32,15 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
+matplotlib.rcParams.update({
+    "font.size": 14,
+    "axes.titlesize": 16,
+    "axes.labelsize": 15,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 13,
+    "legend.fontsize": 13,
+})
+
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 from pathlib import Path
@@ -190,15 +199,15 @@ def save_dendrogram(
             color="#e74c3c", linewidth=1.2, linestyle="--",
             label=f"Critical threshold ({crit_threshold/3600:.1f}h)",
         )
-        ax.legend(fontsize=9, loc="upper left")
+        ax.legend(fontsize=13, loc="upper left")
 
-    ax.set_ylabel("Travel time (hours)", fontsize=11)
+    ax.set_ylabel("Travel time (hours)", fontsize=15)
     ax.set_xlabel(
         f"Node clusters  (last {p} merges shown, {n} total nodes)" if truncate
         else "Node ID",
-        fontsize=10,
+        fontsize=14,
     )
-    ax.set_title(f"HAC Dendrogram — {title}  ({n} nodes, {LINKAGE_METHOD} linkage)", fontsize=12)
+    ax.set_title(f"HAC Dendrogram — {title}  ({n} nodes, {LINKAGE_METHOD} linkage)", fontsize=16)
     plt.tight_layout()
     plt.savefig(str(out_path), dpi=150)
     plt.close()
@@ -294,25 +303,25 @@ print(f"\nScaling law fit (largest cluster):  S_max ∝ t^{_alpha:.3f}  "
       f"95% CI [{_alpha - _ci_alpha:.3f}, {_alpha + _ci_alpha:.3f}]  "
       f"(a={_a:.2f},  R²={_r2:.4f},  fit range 6–4000h)")
 
-ax1.set_ylabel("Number of clusters", color="#2c3e50", fontsize=11)
-ax2.set_ylabel("Largest cluster size (nodes)", color="#2980b9", fontsize=11)
+ax1.set_ylabel("Number of clusters", color="#2c3e50", fontsize=15)
+ax2.set_ylabel("Largest cluster size (nodes)", color="#2980b9", fontsize=15)
 ax1.tick_params(axis="y", labelcolor="#2c3e50")
 ax2.tick_params(axis="y", labelcolor="#2980b9")
 
-ax1.set_xlabel("Distance threshold (travel time, hours)", fontsize=11)
+ax1.set_xlabel("Distance threshold (travel time, hours)", fontsize=15)
 
 for h, t_s in SNAPSHOTS:
     ax1.axvline(h, color="#aaaaaa", linewidth=0.8, linestyle="--", alpha=0.7)
     ax1.text(h * 1.03, 0.97,
              f"{h}h" if h < 48 else f"{h//24}d",
-             color="#888888", fontsize=8, va="top",
+             color="#888888", fontsize=12, va="top",
              transform=ax1.get_xaxis_transform())
 
 lines1, labels1 = ax1.get_legend_handles_labels()
 lines2, labels2 = ax2.get_legend_handles_labels()
-ax1.legend(lines1 + lines2, labels1 + labels2, loc="center right", fontsize=10)
+ax1.legend(lines1 + lines2, labels1 + labels2, loc="center right", fontsize=14)
 
-plt.title("HAC Percolation — Roman Road Network", fontsize=13)
+plt.title("HAC Percolation — Roman Road Network", fontsize=17)
 plt.tight_layout()
 plt.savefig(OUT_CURVE, dpi=150)
 plt.close()
@@ -524,17 +533,17 @@ ax2c.plot(hours_x, _a * hours_x ** _alpha, color="#85c1e9", linewidth=1.2, lines
 
 ax1c.set_xscale("log"); ax2c.set_xscale("log")
 ax1c.set_yscale("log"); ax2c.set_yscale("log")
-ax1c.set_ylabel("Number of clusters",           color="#2c3e50", fontsize=10)
-ax2c.set_ylabel("Largest cluster size (nodes)", color="#2980b9", fontsize=10)
+ax1c.set_ylabel("Number of clusters",           color="#2c3e50", fontsize=14)
+ax2c.set_ylabel("Largest cluster size (nodes)", color="#2980b9", fontsize=14)
 ax1c.tick_params(axis="y", labelcolor="#2c3e50")
 ax2c.tick_params(axis="y", labelcolor="#2980b9")
-ax1c.set_xlabel("Distance threshold (travel time, hours)", fontsize=10)
+ax1c.set_xlabel("Distance threshold (travel time, hours)", fontsize=14)
 
 for h, t_s in SNAPSHOTS:
     ax1c.axvline(h, color="#aaaaaa", linewidth=0.8, linestyle="--", alpha=0.7)
     ax1c.text(h * 1.03, 0.97,
               f"{h}h" if h < 48 else f"{h//24}d",
-              color="#888888", fontsize=8, va="top",
+              color="#888888", fontsize=12, va="top",
               transform=ax1c.get_xaxis_transform())
 
 # Mark the 4 map thresholds
@@ -543,8 +552,8 @@ for h in _MAP_HOURS:
 
 _l1, _lb1 = ax1c.get_legend_handles_labels()
 _l2, _lb2 = ax2c.get_legend_handles_labels()
-ax1c.legend(_l1 + _l2, _lb1 + _lb2, loc="center right", fontsize=9)
-ax1c.set_title("(a)  HAC Percolation — Roman Road Network", fontsize=12, loc="left")
+ax1c.legend(_l1 + _l2, _lb1 + _lb2, loc="center right", fontsize=13)
+ax1c.set_title("(a)  HAC Percolation — Roman Road Network", fontsize=16, loc="left")
 
 # ── Bottom row: 4 static snapshot maps ────────────────────────────────────
 _subplot_labels = ["(b)", "(c)", "(d)", "(e)"]
@@ -567,7 +576,7 @@ for col, (h, sublabel) in enumerate(zip(_MAP_HOURS, _subplot_labels)):
     _idx   = min(int(np.searchsorted(thresholds, h * 3600, side="left")),
                  len(n_clusters_arr) - 1)
     ax_map.set_title(f"{sublabel}  t = {_label}  ({n_clusters_arr[_idx]} clusters)",
-                     fontsize=10, loc="left")
+                     fontsize=14, loc="left")
     ax_map.set_axis_off()
 
 plt.savefig(COMBINED_PDF, dpi=150, bbox_inches="tight")

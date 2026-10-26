@@ -32,6 +32,15 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import fcluster
 
+matplotlib.rcParams.update({
+    "font.size": 15,
+    "axes.titlesize": 17,
+    "axes.labelsize": 16,
+    "xtick.labelsize": 14,
+    "ytick.labelsize": 14,
+    "legend.fontsize": 14,
+})
+
 ROOT  = Path(__file__).resolve().parents[1]
 PKL   = ROOT / "data/network_paper.pkl"
 CACHE = ROOT / "data/hac_linkage_average_cache.pkl"
@@ -136,11 +145,11 @@ ax.set_ylim(0, 1)
 for h in SNAPSHOT_HOURS:
     ax.axvline(h, color="#ccc", lw=.8, ls="--", alpha=.7)
     ax.text(h * 1.03, .98, f"{h}h" if h < 48 else f"{h//24}d", color="#999",
-            fontsize=8, va="top", transform=ax.get_xaxis_transform())
+            fontsize=13, va="top", transform=ax.get_xaxis_transform())
 ax.axvline(pk.threshold_h, color="#c0392b", lw=1.0, alpha=.4)
 ax.annotate(f"peak ARI {pk.ari_coarse:.2f}  @ {pk.threshold_h:.0f} h ({pk.threshold_h/24:.1f} d)",
             xy=(pk.threshold_h, pk.ari_coarse), xytext=(pk.threshold_h * 1.6, pk.ari_coarse - .10),
-            fontsize=9, color="#c0392b",
+            fontsize=14, color="#c0392b",
             arrowprops=dict(arrowstyle="->", color="#c0392b", lw=.8))
 ax.set_title("HAC travel-time clusters vs. Roman provinces (AWMC AD 200)")
 plt.tight_layout()

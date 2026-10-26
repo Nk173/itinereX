@@ -25,8 +25,8 @@
 \title{Hierarchical percolation of travel time reveals spatial structure
   in the Roman road network}
 
-\author[1]{Nishanth Kumar}
-\affil[1]{[Affiliation -- to be completed]}
+\author[1]{Authors -- to be completed}
+\affil[1]{[Affiliations -- to be completed]}
 
 \date{}
 
@@ -61,7 +61,35 @@ against spatial/temporal null models, as the next step of this work.
 \end{abstract}
 
 \section{Introduction}
-\todo[inline]{Introduction placeholder -- to be completed.}
+\label{sec:intro}
+\todo[inline]{Introduction placeholder -- literature review and broader
+  framing to be completed. The two questions below should survive into
+  whatever full introduction is eventually written; everything else here
+  is a placeholder.}
+
+This paper is organized around two questions, both posed on the network
+built from the Itiner-e Roman road data \citep{desoto2025itinere}:
+
+\begin{enumerate}
+\item \textbf{Can hierarchical agglomerative clustering (HAC) on
+  travel-time distances identify spatial units that emerge from the road
+  network itself?} We use percolation-equivalent HAC (Section~\ref{sec:hac-method})
+  to cluster the network at every travel-time threshold, calibrate the
+  approach against a known partition (Section~\ref{sec:validation}), and
+  then apply it to our own network to see what clusters it produces on
+  its own terms (Section~\ref{sec:primary}).
+\item \textbf{Are the spatial units that emerge significant, or are they
+  artefacts of the network's own construction?} A cluster can look like a
+  coherent region without reflecting anything beyond the geometry and
+  density of the digitized road network it was built from. Answering this
+  requires comparing the clusters obtained on the real network against
+  the same procedure run on spatial and temporal null models of that
+  network -- i.e.\ networks that share its nodes and broad connectivity
+  but not whatever structure actually produces the clustering. This
+  comparison, against the null models in \texttt{results/Null-models/},
+  is the next stage of this work and is not yet part of this manuscript
+  (see Section~\ref{sec:primary} and the Discussion).
+\end{enumerate}
 
 \section{Methods}
 
@@ -216,23 +244,64 @@ Roman provincial map.
 \label{fig:network0}
 \end{figure}
 
+Figure~\ref{fig:alignment_curve} shows ARI as a continuous function of
+threshold rather than at the six fixed snapshots of
+Table~\ref{tab:validation}, making the sharpness of the 77-hour peak
+visible directly, and Figure~\ref{fig:province_match} breaks that peak
+down province by province: for each province, how well its nodes stay
+together in a single dominant cluster (recall) and how much of that
+cluster is specific to it (precision), combined into an F1 score. Small,
+geographically isolated provinces (Britannia, Cyprus, Creta, Sicilia,
+Sardinia, Corsica) are recovered almost perfectly (F1 $\approx 1$), as
+expected since islands and peripheral regions have little opportunity to
+merge with neighbours at this threshold; the worst-recovered provinces
+are the small Alpine provinces (Alpes Graiae, Cottiae, Poeninae,
+Maritimae) and Germania Superior, which sit on travel corridors between
+larger, better-connected neighbours and are absorbed into them rather
+than forming distinct clusters of their own. This province-by-province
+view is what we will be looking for an equivalent of in
+Section~\ref{sec:primary}, once network1-single's clusters have had the
+same closer look.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_province_alignment_curve.png}
+\caption{ARI between HAC clusters and Roman provinces as a continuous
+  function of travel-time threshold, calibration network
+  (\texttt{results/HAC/network0-average/maps/province\_alignment\_curve.png}).}
+\label{fig:alignment_curve}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.82\textheight,keepaspectratio]{figures/fig3_province_match.png}
+\caption{Per-province F1 (recall $\times$ precision of each province's
+  dominant cluster) at the peak-alignment threshold ($t=78.2$h),
+  calibration network
+  (\texttt{results/HAC/network0-average/maps/province\_match\_78.2h.png}).}
+\label{fig:province_match}
+\end{figure}
+
 \subsection{Towards emergent spatial units in the itinereX network
   (network1-single)}
 \label{sec:primary}
 
 Having confirmed in Section~\ref{sec:validation} that percolation-equivalent
 HAC can recover a known administrative partition when one is present, we
-turn to the question this paper is actually about: what spatial units does
-the itinereX network itself suggest, under its own independently built
-topology and a simple constant-speed (2~km/h) travel-time model? This is
-not a replication of Section~\ref{sec:validation} -- we are not trying to
-reproduce its ARI on a different network, and treating the comparison that
-way would misread what each run is for. Section~\ref{sec:validation}
-establishes that the method works; this section applies it, for the first
-time, to a network nobody has clustered before, with the goal of
-characterizing the clusters themselves as candidate spatial units, of
-which provincial alignment is only one possible interpretation among
-several worth testing.
+turn to the first question posed in Section~\ref{sec:intro}: what spatial
+units does the itinereX network itself suggest, under its own
+independently built topology and a simple constant-speed (2~km/h)
+travel-time model? This is not a replication of Section~\ref{sec:validation}
+-- we are not trying to reproduce its ARI on a different network, and
+treating the comparison that way would misread what each run is for.
+Section~\ref{sec:validation} establishes that the method works; this
+section applies it, for the first time, to a network nobody has clustered
+before, with the goal of characterizing the clusters themselves as
+candidate spatial units, of which provincial alignment is only one
+possible interpretation among several worth testing. The second question
+-- whether those units are significant, or artefacts of this particular
+network's construction -- is addressed only partially here, and is taken
+up properly in the paragraph after next.
 
 As a first, coarse orientation, we benchmarked the resulting clusters
 against the Roman provinces using the same ARI/NMI procedure as
@@ -259,10 +328,20 @@ themselves, actually correspond to -- whether that is a different,
 non-provincial regionalization of the network (e.g.\ against the Pleiades
 regions already attached to this network's nodes), a boundary effect of
 the constant-speed travel-time model, or a genuine feature of the
-network's own topology. Distinguishing between these is the purpose of
-comparing this run against the spatial/temporal null models in
-\texttt{results/Null-models/}, which is ongoing work and not yet part of
-this manuscript.
+network's own topology. This is exactly the second question from
+Section~\ref{sec:intro}: a cluster is not yet a \emph{significant} spatial
+unit just because it is produced by the algorithm -- it must also be
+shown to be more than an artefact of the network's own construction
+(its node density, its digitized geometry, its connectivity, none of
+which need reflect anything historical). Distinguishing a genuine signal
+from such an artefact requires comparing network1-single's clusters,
+threshold by threshold, against the same HAC procedure run on the
+spatial and temporal null models in \texttt{results/Null-models/} --
+networks built to share the real network's nodes and coarse connectivity
+without sharing whatever produces its clustering. That comparison is
+ongoing work and not yet part of this manuscript; its absence is the
+reason Section~\ref{sec:primary} stops at a benchmark number rather than
+a claim about what the clusters represent.
 
 \section{Discussion}
 \todo[inline]{Discussion placeholder -- to be completed. Note for later:

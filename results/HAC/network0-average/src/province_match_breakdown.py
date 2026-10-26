@@ -31,6 +31,14 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import fcluster
 
+matplotlib.rcParams.update({
+    "font.size": 14,
+    "axes.titlesize": 16,
+    "axes.labelsize": 15,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 12,
+})
+
 ROOT  = Path(__file__).resolve().parents[1]
 PKL   = ROOT / "data/network_paper.pkl"
 CACHE = ROOT / "data/hac_linkage_average_cache.pkl"
@@ -85,7 +93,7 @@ with pd.option_context("display.max_rows", None, "display.width", 120):
 r = res.sort_values("f1")
 def band(f):
     return "#1a9850" if f >= 0.6 else "#fee08b" if f >= 0.35 else "#d73027"
-fig, ax = plt.subplots(figsize=(9, max(6, .3 * len(r))))
+fig, ax = plt.subplots(figsize=(12, max(6, .3 * len(r))))
 ax.barh(r.province, r.f1, color=[band(f) for f in r.f1])
 ax.set_xlabel("F1  (recall x precision of the province's dominant cluster)")
 ax.set_xlim(0, 1)

@@ -19,6 +19,15 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import fcluster
 
+matplotlib.rcParams.update({
+    "font.size": 15,
+    "axes.titlesize": 17,
+    "axes.labelsize": 16,
+    "xtick.labelsize": 14,
+    "ytick.labelsize": 14,
+    "legend.fontsize": 14,
+})
+
 ROOT  = Path(__file__).resolve().parents[1]
 PKL   = ROOT / "data/network_paper.pkl"
 CACHE = ROOT / "data/hac_linkage_average_cache.pkl"
@@ -89,13 +98,13 @@ for s in (axc, axc2):
     s.set_xscale("log"); s.set_yscale("log")
 for h in MAP_HOURS:
     axc.axvline(h, color="#e74c3c", lw=1.0, alpha=.35)
-    axc.text(h * 1.03, .97, hlabel(h), color="#c0392b", fontsize=9, va="top",
+    axc.text(h * 1.03, .97, hlabel(h), color="#c0392b", fontsize=14, va="top",
              transform=axc.get_xaxis_transform())
 axc.set_xlabel("Travel-time threshold (hours, Tobler)")
 axc.set_ylabel("Number of clusters", color="#2c3e50")
 axc2.set_ylabel("Largest cluster size (nodes)", color="#2980b9")
 h1, l1 = axc.get_legend_handles_labels(); h2, l2 = axc2.get_legend_handles_labels()
-axc.legend(h1 + h2, l1 + l2, loc="center right", fontsize=9)
+axc.legend(h1 + h2, l1 + l2, loc="center right", fontsize=14)
 axc.set_title("(a)  HAC percolation - Roman road network (manuscript graph, Tobler travel time)",
               loc="left")
 
@@ -109,7 +118,7 @@ for k, h in enumerate(MAP_HOURS):
     gi = int(np.searchsorted(grid, h * 3600))
     gi = min(gi, len(ncl) - 1)
     ax.set_title(f"({'bcdefg'[k]})  t = {hlabel(h)}  ({ncl[gi]} clusters)",
-                 loc="left", fontsize=10)
+                 loc="left", fontsize=15)
     ax.set_axis_off()
 
 plt.savefig(OUT, dpi=150, bbox_inches="tight")
