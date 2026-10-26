@@ -155,19 +155,65 @@ own network.
 Sweeping $t$ across every merge height gives, at each threshold, the
 number of clusters and the size of the largest one relative to the
 network (the percolation curve), to which we fit a power law over its
-emergent region.
-
-\paragraph{Alignment with provinces.}
-At each threshold $t$, we score the resulting clusters against the
+emergent region. At each threshold $t$, we score the resulting clusters against the
 province labels of nodes with a known province assignment using the
 Adjusted Rand Index \citep[ARI;][]{hubert1985comparing}, and identify
 the travel-time threshold at which this alignment is strongest.
 
+\subsection{Entropy of cluster sizes}
+\label{sec:entropy}
+
+As clusters merge during the percolation sweep, the distribution of
+cluster sizes changes shape. Following \citet{molinero2017angular}, we
+plan to track the Shannon entropy of this distribution as a function of
+threshold: local peaks in that entropy curve mark the points where the
+system passes between qualitatively different stages of integration,
+giving a more principled way to locate transitions in the percolation
+process than reading them off the cluster-count curve by eye. This
+analysis has not yet been carried out on either network; it is
+introduced here as the next planned step.
+
+\subsection{Comparison with spatial null models}
+\label{sec:nullmodels}
+
+To test whether the clusters found above reflect more than the
+geometry of the network's node positions, we compare them against
+spatial null models built on the same nodes but not the same roads: a
+nearest-neighbour network and a Delaunay-triangulation network, each
+reinforced with a minimum-spanning-tree backbone so that every node
+remains reachable. Figure~\ref{fig:null_knn} and
+Figure~\ref{fig:null_delaunay} show the same percolation procedure
+applied to these two null networks. In both, the number of clusters
+falls and the largest cluster grows smoothly and gradually with
+threshold, without the plateaus visible in the real network's
+percolation curve (Figure~\ref{fig:network0}). A full comparison,
+scoring the real network's clusters against these null models threshold
+by threshold, is still in progress, and will determine whether the
+stages found in the real network are a genuine signal or an artefact of
+its geometry alone.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_null_knn.png}
+\caption{Percolation curve and snapshot cluster maps for a
+  nearest-neighbour spatial null network sharing the real network's
+  nodes.}
+\label{fig:null_knn}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_null_delaunay.png}
+\caption{Percolation curve and snapshot cluster maps for a
+  Delaunay-triangulation spatial null network sharing the real
+  network's nodes.}
+\label{fig:null_delaunay}
+\end{figure}
+
 \section{Results}
 \label{sec:results}
 
-\subsection{Calibration: recovering a known administrative partition
-  (network0-average)}
+\subsection{Identifying spatial units using HAC}
 \label{sec:validation}
 
 Before asking what spatial units our own network suggests, we first
@@ -186,8 +232,8 @@ again as clusters grow beyond provincial scale.
 \begin{table}[h]
 \centering
 \caption{Province alignment at fixed travel-time snapshots, calibration
-  network (network0-average; \citet{pazout2026network}, Tobler-function
-  travel time; $n=10{,}430$ nodes with known province).}
+  network (\citet{pazout2026network}, Tobler-function travel time;
+  $n=10{,}430$ nodes with known province).}
 \label{tab:validation}
 \begin{tabular}{lrrr}
 \toprule
@@ -214,7 +260,7 @@ Roman provincial map.
 \centering
 \includegraphics[width=\textwidth]{figures/fig1_network0-average_percolation.pdf}
 \caption{Percolation curve and snapshot cluster maps for the calibration
-  network (\texttt{results/HAC/network0-average/maps/hac\_percolation\_combined.pdf}).}
+  network.}
 \label{fig:network0}
 \end{figure}
 
@@ -234,15 +280,14 @@ Maritimae) and Germania Superior, which sit on travel corridors between
 larger, better-connected neighbours and are absorbed into them rather
 than forming distinct clusters of their own. This province-by-province
 view is what we will be looking for an equivalent of in
-Section~\ref{sec:primary}, once network1-single's clusters have had the
+Section~\ref{sec:primary}, once our own network's clusters have had the
 same closer look.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/fig2_province_alignment_curve.png}
 \caption{ARI between HAC clusters and Roman provinces as a continuous
-  function of travel-time threshold, calibration network
-  (\texttt{results/HAC/network0-average/maps/province\_alignment\_curve.png}).}
+  function of travel-time threshold, calibration network.}
 \label{fig:alignment_curve}
 \end{figure}
 
@@ -251,13 +296,11 @@ same closer look.
 \includegraphics[height=0.82\textheight,keepaspectratio]{figures/fig3_province_match.png}
 \caption{Per-province F1 (recall $\times$ precision of each province's
   dominant cluster) at the peak-alignment threshold ($t=78.2$h),
-  calibration network
-  (\texttt{results/HAC/network0-average/maps/province\_match\_78.2h.png}).}
+  calibration network.}
 \label{fig:province_match}
 \end{figure}
 
-\subsection{Towards emergent spatial units in the itinereX network
-  (network1-single)}
+\subsection{Applying HAC to the itinereX network}
 \label{sec:primary}
 
 Having confirmed in Section~\ref{sec:validation} that percolation-equivalent
@@ -295,27 +338,10 @@ does not do justice to what the clusters at each threshold actually look
 like, and a closer, better-presented look at them is needed before drawing
 conclusions from it.
 
-\paragraph{What we take this to mean.}
-The more interesting question this result raises is not ``why is the ARI
-lower here'', but what the two comparable local optima, and the clusters
-themselves, actually correspond to -- whether that is a different,
-non-provincial regionalization of the network (e.g.\ against the Pleiades
-regions already attached to this network's nodes), a boundary effect of
-the constant-speed travel-time model, or a genuine feature of the
-network's own topology. This is exactly the second question from
-Section~\ref{sec:intro}: a cluster is not yet a \emph{significant} spatial
-unit just because it is produced by the algorithm -- it must also be
-shown to be more than an artefact of the network's own construction
-(its node density, its digitized geometry, its connectivity, none of
-which need reflect anything historical). Distinguishing a genuine signal
-from such an artefact requires comparing network1-single's clusters,
-threshold by threshold, against the same HAC procedure run on the
-spatial and temporal null models in \texttt{results/Null-models/} --
-networks built to share the real network's nodes and coarse connectivity
-without sharing whatever produces its clustering. That comparison is
-ongoing work and not yet part of this manuscript; its absence is the
-reason Section~\ref{sec:primary} stops at a benchmark number rather than
-a claim about what the clusters represent.
+The more interesting question is not why the ARI is lower here, but what
+these clusters represent. That is exactly the second question raised in
+Section~\ref{sec:intro}, and is taken up in
+Sections~\ref{sec:entropy} and~\ref{sec:nullmodels}.
 
 \section{Discussion}
 \todo[inline]{Discussion placeholder -- to be completed. Note for later:

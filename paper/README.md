@@ -13,79 +13,63 @@ refs.bib     Bibliography
 main.bbl     Pre-built bibliography (so the PDF can be rebuilt with a single
              pdflatex pass if bibtex/biber isn't available)
 main.pdf     Compiled draft
-figures/     fig1 = network0-average/maps/hac_percolation_combined.pdf
-             fig2 = network0-average/maps/province_alignment_curve.png
-             fig3 = network0-average/maps/province_match_78.2h.png
-             (all three from the calibration run; there is deliberately no
-             figure for the primary network1-single result -- see Status)
+figures/     fig1 = calibration network's percolation curve + snapshots
+             fig2 = calibration network's ARI-vs-threshold curve
+             fig3 = calibration network's per-province F1 breakdown
+             fig4 = nearest-neighbour spatial null model's percolation curve
+             fig5 = Delaunay-triangulation spatial null model's percolation curve
 ```
 
-All three figures were regenerated from `results/HAC/network0-average/src/`
-with larger matplotlib font sizes (`rcParams` + explicit `fontsize=` bumped
+Figures 1-3 were regenerated from `results/HAC/network0-average/src/` with
+larger matplotlib font sizes (`rcParams` + explicit `fontsize=` bumped
 throughout `plot_combined.py`, `province_alignment_curve.py`,
-`province_match_breakdown.py`) -- the originals had unreadably small axis
-labels/annotations once shrunk to page width. `network1-single/src/hac_percolation.py`
-got the same font-size treatment in source but wasn't rerun (it isn't
-currently used as a figure in the paper, and rerunning it needs the full
-`data_cleaning/` pipeline rather than a cheap cache replay).
+`province_match_breakdown.py`, plus a staggered label fix in
+`plot_combined.py` so the "77.14h"/"5d" threshold markers stop colliding at
+the larger size) -- the originals had unreadably small axis labels once
+shrunk to page width. Figures 4-5 are copied as-is from the null-model
+analysis in `results/Null-models/`. `network1-single/src/hac_percolation.py`
+got the same font-size treatment in source but wasn't rerun (not currently
+used as a figure in the paper; rerunning needs the full `data_cleaning/`
+pipeline rather than a cheap cache replay).
 
 ## Status
 
 - **Two questions, stated explicitly in the Introduction** (§1): (1) can
   percolation-equivalent HAC identify spatial units that emerge from the
   itinereX road network itself, and (2) are those units significant, or
-  just artefacts of the network's own construction — answerable only by
-  comparing against the null models in `results/Null-models/`. Everything
-  else in the Introduction is still a placeholder; these two questions are
-  meant to survive into the full version.
-- **Methods** (Data, HAC/percolation) and **Results** are filled in, with
-  numbers computed directly from `results/HAC/network1-single/data/hac_clusters.csv`
-  and `results/HAC/network0-average/` logs/data.
-- §2.1 (Data) and §2.2 (HAC/percolation) are each a single, tight paragraph
-  (plus one short follow-on in §2.2 on the percolation curve), written in
-  the terse, citation-anchored style of Pažout et al. (2026). Neither
-  mentions repo paths or the `network0-average`/`network1-single` labels —
-  those are code/figure-caption/Data-accessibility identifiers, not prose;
-  the text instead says "our own network" and "the calibration network".
-- §2.1 adds detail on the province-boundary source (AWMC AD 200,
-  approximate, clipped to modern coastlines, fine 57-unit vs. coarse
-  47-unit partition) and states plainly that the network is built from the
-  Itiner-e linework and cleaned following the same general procedure as
-  Pažout et al.
-- §2.2 states the single-linkage/percolation equivalence in plain terms
-  first, then cites it to Arcaute et al. (2016) (percolating street
-  intersections by Euclidean distance) and Molinero, Murcio & Arcaute
-  (2017) (percolating roads by relative segment angle) before describing
-  our own application of it to travel time. Two networks, two HAC
-  settings: our own network uses single linkage (exact percolation
-  equivalence); the calibration network inherits average linkage from
-  earlier work and is flagged as not sharing that equivalence, so the two
-  runs' ARI/NMI numbers in Results are never read as directly comparable.
-- §2.2's "Alignment with provinces" paragraph is down to one sentence:
-  score clusters against province labels with the Adjusted Rand Index,
-  find the threshold where that's strongest. Dropped the NMI definition,
-  the exhaustive-merge-height search description, and the bootstrap-CI
-  method — those are still reported as findings in Results (Table 1, the
-  77h/31.8h peaks, the bootstrap CIs), just not pre-explained in Methods.
-  Normalized Mutual Information (Danon et al., 2005) consequently dropped
-  out of the bibliography, since it's no longer cited anywhere in the text.
-- §3.1 (network0-average) is framed as a **calibration** check that the
-  method can recover a known administrative partition — not as the paper's
-  main result. It now includes all three calibration figures: the
-  percolation curve/snapshots (Fig. 1), the full ARI-vs-threshold curve
-  (Fig. 2), and the per-province F1 breakdown at the peak threshold (Fig. 3).
-- §3.2 (network1-single) is framed as the **primary, novel** contribution:
-  applying the method to itinereX's own network for the first time to find
-  candidate spatial units, not as an attempt to replicate §3.1. Its
-  province-alignment benchmark (ARI ≈ 0.43) is reported in prose only —
-  **no dedicated figure or table** — since a single alignment statistic
-  doesn't do justice to the clusters and needs a closer look first.
-- **Discussion / Authors' contributions / Funding** are still placeholders.
-- Next step (not yet in the manuscript): compare network1-single's
-  clusters against the spatial/temporal null models in
-  `results/Null-models/` to separate a genuine topological signal from an
-  artefact of the constant-speed travel-time model — i.e. answer question
-  (2) above.
+  just artefacts of the network's own construction. Everything else in the
+  Introduction is still a placeholder.
+- **§2.1 (Data)** and **§2.2 (HAC/percolation)** are each a tight paragraph
+  in the terse, citation-anchored style of Pažout et al. (2026), with no
+  repo paths or `network0-average`/`network1-single` labels in the prose —
+  those stay in code, figure captions, and Data accessibility.
+- **§2.3 (Entropy of cluster sizes)**, new: introduces, in words only, a
+  planned analysis following Molinero et al. (2017) — tracking the Shannon
+  entropy of the cluster-size distribution across thresholds to locate
+  percolation stages as entropy peaks. Not yet carried out on either
+  network.
+- **§2.4 (Comparison with spatial null models)**, new: describes the two
+  spatial null families (nearest-neighbour, Delaunay, both with an MST
+  connectivity backbone) and shows their percolation curves (Figs. 4-5) as
+  a first look — both are smooth and gradual, unlike the real network's
+  curve. The actual threshold-by-threshold comparison against the real
+  network is explicitly still in progress.
+- **§3.1**, renamed from "Calibration: recovering a known administrative
+  partition (network0-average)" to **"Identifying spatial units using
+  HAC"**. Now includes all three calibration figures (percolation
+  curve/snapshots, ARI-vs-threshold curve, per-province F1 breakdown).
+- **§3.2**, renamed from "Towards emergent spatial units in the itinereX
+  network (network1-single)" — that title claimed a result this analysis
+  doesn't support yet — to **"Applying HAC to the itinereX network"**. Its
+  closing paragraph (previously long and winding) is now three sentences
+  that point to §2.3/§2.4 instead of re-explaining the null-model
+  rationale inline.
+- All `\texttt{repo/path}` references and `network0-average`/
+  `network1-single` labels removed from Results prose and figure captions
+  (they remain in Data accessibility, where they belong).
+- **Discussion / Authors' contributions / Funding** are still placeholders
+  — not touched this round, so the Discussion `\todo` still mentions
+  `network1-single` and a repo path; that's next.
 
 ## Building
 
