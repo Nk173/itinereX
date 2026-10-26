@@ -1,0 +1,2 @@
+metric,fit_range_hours,alpha,ci_95_half_width,ci_95_low,ci_95_high,prefactor_a,r2,fit_points,source
+largest_cluster_size_vs_threshold,6-4000,0.9068112395747687,0.004973084432209654,0.901838155142559,0.9117843240069784,3.835706927579634,0.9623296541935633,5002,itinerex_hac_linkage_average_cache.pkl

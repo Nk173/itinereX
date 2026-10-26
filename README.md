@@ -11,9 +11,28 @@ The goal of this repository is to take the source linework (often with near-miss
 - A cleaned, noded topology with degree-2 simplification.
 - A **time-weighted** graph export where each edge has `weight = time_s` (seconds) plus stable `node_id` / `edge_id` mappings.
 
+## Repository structure
+
+```
+data_cleaning/     Raw Itiner-e linework + the scripts that clean it into a weighted graph
+  raw/               Raw inputs (itinere_roads.*, route-segments-all-*.ndjson)
+  scripts/           itinerex_clean_network.py, export_geojson.py
+  cleaned_data/      Cleaned/derived outputs (G_clean_weighted_*, province_subnetworks.pkl, rrn_*.geojson, ...)
+src/                 General analysis scripts (centrality, pagerank) that read cleaned_data/
+results/
+  HAC/               Hierarchical agglomerative clustering + travel-time percolation analysis
+  Null-models/       Spatial null models (KNN/Delaunay/MST) for the road network, adapted from
+                     github.com/hayaalmuhanna/Roman-Provinces-ECI (CC BY-SA 4.0)
+reference/           Source papers, province boundaries, and bibliography used across analyses
+notebooks/           Exploratory notebooks
+docs/                GitHub Pages site (interactive maps)
+```
+
+See `results/HAC/README.md` and `results/Null-models/README.md` for those analyses specifically.
+
 ## Cleaning schematic
 
-![Network cleaning schematics](itinere_network_cleaning_schematics.png)
+![Network cleaning schematics](docs/itinere_network_cleaning_schematics.png)
 
 ## Interactive map
 Open the hosted map on GitHub Pages:
@@ -24,7 +43,7 @@ Open the hosted map on GitHub Pages:
 
 ## Roman Provinces
 
-The notebook also overlays Roman provinces (from `provinces/provinces.shp`) onto the cleaned network and partitions the graph into per-province sub-networks.
+The notebook also overlays Roman provinces (from `reference/provinces/provinces.shp`) onto the cleaned network and partitions the graph into per-province sub-networks.
 
 **How sub-networks are constructed**
 - **Edge → province assignment:** each edge is assigned to the (most specific) province containing its midpoint; if the midpoint is not inside any polygon, the edge is assigned to the province with the longest overlap length.
@@ -38,11 +57,11 @@ The notebook also overlays Roman provinces (from `provinces/provinces.shp`) onto
 
 - Map: https://nk173.github.io/itinereX/roads_with_provinces_nodes.html
 
-**Province-related outputs**
-- [G_clean_weighted_edges_with_province.csv](G_clean_weighted_edges_with_province.csv): weighted edge list with `time_s` and province assignment (plus crossing/outside flags)
-- [crossing_edges.geojson](crossing_edges.geojson): edges whose endpoints fall in different provinces
-- [outside_provinces_edges.geojson](outside_provinces_edges.geojson): edges not assignable to any province
-- [province_subnetworks.pkl](province_subnetworks.pkl): per-province NetworkX subgraphs + edge tables
+**Province-related outputs** (in `data_cleaning/cleaned_data/`)
+- [G_clean_weighted_edges_with_province.csv](data_cleaning/cleaned_data/G_clean_weighted_edges_with_province.csv): weighted edge list with `time_s` and province assignment (plus crossing/outside flags)
+- [crossing_edges.geojson](data_cleaning/cleaned_data/crossing_edges.geojson): edges whose endpoints fall in different provinces
+- [outside_provinces_edges.geojson](data_cleaning/cleaned_data/outside_provinces_edges.geojson): edges not assignable to any province
+- [province_subnetworks.pkl](data_cleaning/cleaned_data/province_subnetworks.pkl): per-province NetworkX subgraphs + edge tables
 
 ## Network statistics
 
@@ -60,13 +79,13 @@ The notebook also overlays Roman provinces (from `provinces/provinces.shp`) onto
 
 ## How to run
 
-1. Open the notebook: [itinere-X_network.ipynb](itinere-X_network.ipynb)
-2. Run the cells top-to-bottom.
+1. Open the notebook: [notebooks/itinere-X_network.ipynb](notebooks/itinere-X_network.ipynb)
+2. Run the cells top-to-bottom (from the `notebooks/` directory; paths are relative to repo root via `../`).
 
 Outputs:
-- [roads_before_cleaning.html](roads_before_cleaning.html)
-- [roads_after_cleaning.html](roads_after_cleaning.html)
-- `G_clean_weighted_with_ids.pkl`
+- `maps/roads_before_cleaning.html`
+- `maps/roads_after_cleaning.html`
+- `data_cleaning/cleaned_data/G_clean_weighted_with_ids.pkl`
 
 
 

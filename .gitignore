@@ -4,9 +4,15 @@
 .claude/settings.local.json
 
 # Generated caches (large, reproducible)
-data/hac_linkage_cache.pkl
-data/hac_linkage_single_cache.pkl
+results/HAC/data/hac_linkage_cache.pkl
+results/HAC/data/hac_linkage_single_cache.pkl
 __pycache__/
 
 # Generated map outputs (large HTML/interactive files, reproducible)
 maps/*.html
+
+# paper_replication: cloned upstream repo + large generated artefacts
+results/HAC/paper_replication/roman-road-networks/
+results/HAC/paper_replication/data/*.pkl
+results/HAC/paper_replication/data/*.gpkg
+results/HAC/paper_replication/hac_run.log

@@ -1,0 +1,3 @@
+family,cost_type,model,abs_exp_gap_to_empirical
+empire_spatial,cost,exponential,1.8552934070760637e-06
+empire_spatial,distance,exponential,2.871968590730974e-07

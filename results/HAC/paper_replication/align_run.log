@@ -1,0 +1,5 @@
+10430 / 10496 nodes with a known province
+  57 fine units, 47 coarse units
+CSV -> /Users/nk821/Developer/GitHub/itinereX/paper_replication/data/province_alignment.csv
+Peak ARI (coarse): 0.690 at 78.2 h (3.26 d), 66 clusters
+Plot -> /Users/nk821/Developer/GitHub/itinereX/paper_replication/maps/province_alignment_curve.png

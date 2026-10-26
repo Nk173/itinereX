@@ -1,0 +1,5 @@
+threshold_s,n_clusters,largest_cluster,method
+172800.0,30,3913,approx_edge_threshold
+604800.0,5,7385,approx_edge_threshold
+1036800.0,2,8062,approx_edge_threshold
+4320000.0,1,8460,approx_edge_threshold

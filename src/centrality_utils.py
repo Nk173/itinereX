@@ -11,8 +11,8 @@ import numpy as np
 import folium
 from pathlib import Path
 
-PICKLE_PATH  = Path("data/G_clean_weighted_with_ids.pkl")
-PROVINCE_CSV = Path("data/G_clean_weighted_edges_with_province.csv")
+PICKLE_PATH  = Path("data_cleaning/cleaned_data/G_clean_weighted_with_ids.pkl")
+PROVINCE_CSV = Path("data_cleaning/cleaned_data/G_clean_weighted_edges_with_province.csv")
 
 # Fixed node colour — opacity encodes centrality
 NODE_COLOR = "#c0392b"
