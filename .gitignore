@@ -25,3 +25,12 @@ results/Null-models/data/processed/*.pkl
 results/Null-models/data/processed/hac_null_analysis/*/*.pkl
 results/HAC/maps/*.pdf
 maps/roads_all_provinces.html.zip
+
+# LaTeX build artefacts (main.bbl and main.pdf are committed deliberately)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz

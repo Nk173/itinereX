@@ -1,0 +1,264 @@
+% ============================================================================
+% Draft manuscript, formatted for submission to a Royal Society journal
+% (target: Royal Society Open Science, following the methodological precedent
+% of Arcaute et al. 2016, R. Soc. Open Sci. 3:150691 -- see reference/papers/
+% rsos.150691.pdf).
+%
+% This file uses the standard `article' class as a placeholder layout. The
+% official RSOS LaTeX template (`rsos.cls'), available from the journal /
+% Overleaf, is a drop-in replacement: swap the \documentclass line and the
+% preamble below for the journal template's own preamble -- the section
+% structure and content do not need to change.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{authblk}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{natbib}
+\usepackage{caption}
+\usepackage{todonotes}
+
+\title{Hierarchical percolation of travel time recovers the provincial
+  structure of the Roman road network}
+
+\author[1]{Nishanth Kumar}
+\affil[1]{[Affiliation -- to be completed]}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We apply hierarchical agglomerative clustering (HAC) on travel-time
+distances -- mathematically equivalent to a percolation sweep over the
+network's edges -- to the Roman road network, and ask whether the
+clusters that emerge at different travel-time thresholds recover the
+Roman provinces. We first validate the method on the exact network and
+travel-time model used in a recent large-scale reconstruction of the
+Roman road system, recovering the provincial partition with an Adjusted
+Rand Index (ARI) of 0.70 (bootstrap 95\% CI [0.68, 0.71]) at a threshold
+of $\sim$77 hours ($\sim$3.2 days) of travel. We then apply the same
+method to our own independently cleaned network under a simpler,
+constant-speed travel-time model, where the provincial alignment is
+weaker (ARI = 0.43, 95\% CI [0.43, 0.45]) and peaks at a shorter
+travel-time scale ($\sim$25--32 hours). Together these results indicate
+that administrative provincial boundaries of the Roman Empire left a
+recoverable, threshold-dependent signature in the connectivity structure
+of its road network, and that the strength of that signature is
+sensitive to the travel-time model used to weight the network.
+\end{abstract}
+
+\section{Introduction}
+\todo[inline]{Introduction placeholder -- to be completed.}
+
+\section{Methods}
+
+\subsection{Data}
+
+\paragraph{Road network.}
+The primary network is built from the raw Itiner-e linework
+\citep{desoto2025itinere}. Near-miss junctions and duplicate endpoints
+are snapped, the linework is noded, and degree-2 chains are simplified,
+giving a weighted graph of 8{,}460 nodes and 12{,}849 edges across 12
+connected components (see \texttt{data\_cleaning/} in the accompanying
+repository). Edge weights are travel times computed from edge length
+at a constant walking speed of 2~km/h.
+
+\paragraph{Validation network.}
+To check that our results are not an artefact of our own cleaning
+pipeline or travel-time model, we separately replicate the analysis on
+the exact Itiner-e export and endpoint-noded topology used by
+\citet{pazout2026network} (10{,}506 nodes, 14{,}770 edges, 13 connected
+components, including ferry links across the Bosporus and the
+Dardanelles), with travel time computed from Tobler's hiking function
+\citep{tobler1993hiking} applied to slope and geodesic edge length. This
+self-contained replication is kept in
+\texttt{results/HAC/paper\_replication/} and does not otherwise modify
+the primary analysis.
+
+\paragraph{Province boundaries.}
+Both networks are overlaid with the Ancient World Mapping Center's
+``Roman Empire AD 200'' province polygons, corrected by A.\ Pa\v{z}out
+\citep{awmc2023provinces} (57 provinces). Each edge is assigned to the
+province containing its midpoint, falling back to the province with the
+longest geometric overlap when the midpoint falls outside every
+polygon; nodes inherit the province of their incident within-province
+edges. Edges that cross a provincial boundary, or that cannot be
+assigned to any province, are excluded from the alignment scoring
+described below.
+
+\subsection{Hierarchical agglomerative clustering and percolation}
+
+Following the general approach of \citet{arcaute2016cities}, who use a
+percolation sweep over distance thresholds between street intersections
+to recover the hierarchical regional and urban structure of Britain, we
+apply an equivalent percolation sweep to travel time on the Roman road
+network itself, rather than to Euclidean distance between unconnected
+points.
+
+Within each connected component, we compute pairwise travel-time
+distances between nodes and perform hierarchical agglomerative
+clustering (HAC) using single linkage. Because single linkage merges
+clusters at the weight of the minimum edge connecting them, cutting the
+resulting dendrogram at a travel-time threshold $t$ reproduces exactly
+the connected components of the network with all edges of weight
+greater than $t$ removed -- i.e.\ HAC under single linkage is
+mathematically equivalent to a percolation sweep over the network's
+edges, computed once per component rather than independently at every
+threshold.
+
+Sweeping $t$ across the full range of merge heights gives, at each
+threshold: the number of clusters, and the size of the largest cluster
+relative to the network (the percolation curve). We additionally fit a
+power law to the percolation curve over its emergent region.
+
+\paragraph{Alignment with provinces.}
+At each threshold $t$, we compare the resulting cluster labels to the
+province labels of the nodes with a known province assignment, using
+the Adjusted Rand Index \citep[ARI;][]{hubert1985comparing} and
+Normalized Mutual Information \citep[NMI;][]{danon2005comparing}. ARI
+ranges from 0 (random partition) to 1 (perfect agreement, up to cluster
+relabelling); NMI ranges from 0 to 1 and does not penalize a finer
+partition as harshly as ARI. We search exhaustively over every distinct
+merge height for the threshold that maximizes ARI against the
+provinces, and estimate a 95\% confidence interval on that best ARI (and
+on the threshold it occurs at) by bootstrap resampling nodes with
+replacement and re-selecting, for each resample, the best-scoring
+threshold among those closest to the full-data optimum.
+
+\section{Results}
+
+\subsection{Validation on the manuscript's network (first result)}
+\label{sec:validation}
+
+Figure~\ref{fig:paper_replication} shows the percolation curve and
+snapshot cluster maps for the validation network of
+\citet{pazout2026network}, with Tobler-function travel times and AWMC
+provinces (10{,}430 of 10{,}506 nodes have a known province).
+
+Table~\ref{tab:validation} reports ARI and NMI at six representative
+travel-time snapshots. Alignment with the provinces rises from
+essentially zero at 6--12 hours, peaks around 1--3 days, and falls off
+again as clusters grow beyond provincial scale.
+
+\begin{table}[h]
+\centering
+\caption{Province alignment at fixed travel-time snapshots, validation
+  network (\citet{pazout2026network}, Tobler-function travel time;
+  $n=10{,}430$ nodes with known province).}
+\label{tab:validation}
+\begin{tabular}{lrrr}
+\toprule
+Snapshot & Clusters & ARI & NMI \\
+\midrule
+6 h   & 2{,}809 & 0.039 & 0.640 \\
+12 h  & 1{,}376 & 0.092 & 0.683 \\
+24 h  & 514     & 0.201 & 0.734 \\
+2 d   & 154     & 0.516 & 0.803 \\
+7 d   & 22      & 0.493 & 0.778 \\
+12 d  & 15      & 0.308 & 0.689 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+An exhaustive search over every merge height finds a single, sharp peak
+at $t = 77.1$ hours ($\sim$3.2 days), with ARI $= 0.695$ (95\% bootstrap
+CI $[0.681, 0.710]$). The peak is stable: every bootstrap resample of
+the node set selects the same 77-hour merge height as optimal. At this
+threshold the network's emergent regions correspond closely to the
+Roman provincial map.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_paper_replication_percolation.pdf}
+\caption{Percolation curve and snapshot cluster maps for the validation
+  network (\texttt{results/HAC/paper\_replication/maps/hac\_percolation\_combined.pdf}).}
+\label{fig:paper_replication}
+\end{figure}
+
+\subsection{Percolation structure of the itinereX network (primary result)}
+\label{sec:primary}
+
+Figure~\ref{fig:primary} shows the same analysis applied to our own
+independently cleaned network, with constant-speed (2~km/h) travel
+times (8{,}411 of 8{,}452 clustered nodes have a known province, across
+56 represented provinces).
+
+Table~\ref{tab:primary} reports the same six snapshots. As in
+Section~\ref{sec:validation}, alignment is weak at sub-day thresholds
+and improves markedly by 24 hours, but here it falls away again by 2
+days rather than continuing to improve through the 1--3 day range.
+
+\begin{table}[h]
+\centering
+\caption{Province alignment at fixed travel-time snapshots, primary
+  itinereX network (constant 2~km/h travel time; $n=8{,}411$ nodes with
+  known province).}
+\label{tab:primary}
+\begin{tabular}{lrrr}
+\toprule
+Snapshot & Clusters & ARI & NMI \\
+\midrule
+6 h   & 4{,}455 & 0.029 & 0.615 \\
+12 h  & 2{,}464 & 0.135 & 0.666 \\
+24 h  & 652     & 0.418 & 0.753 \\
+2 d   & 76      & 0.048 & 0.395 \\
+7 d   & 8       & 0.018 & 0.209 \\
+12 d  & 7       & 0.017 & 0.199 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+An exhaustive search over every merge height finds the best alignment at
+$t = 31.8$ hours, with ARI $= 0.433$ (NMI $= 0.763$, 291 clusters),
+95\% bootstrap CI on ARI of $[0.426, 0.448]$. Unlike the single sharp
+peak found in Section~\ref{sec:validation}, the alignment curve here has
+two nearby local maxima of comparable height, around 25 and 32 hours;
+bootstrap resamples select between them, giving a wider 95\% CI on the
+optimal threshold of $[24.8, 31.8]$ hours. The best achievable alignment
+with the provinces (ARI $\approx 0.43$) is substantially weaker than the
+$\approx 0.70$ recovered on the validation network of
+Section~\ref{sec:validation}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_itinerex_percolation.png}
+\caption{Percolation curve and snapshot cluster maps for the primary
+  itinereX network
+  (\texttt{results/HAC/maps/hac\_percolation\_combined.pdf}).}
+\label{fig:primary}
+\end{figure}
+
+\section{Discussion}
+\todo[inline]{Discussion placeholder -- to be completed. Note for later:
+  the gap between the validation network's ARI ($\approx$0.70) and the
+  primary network's ARI ($\approx$0.43) is a candidate finding worth
+  developing -- it may reflect the travel-time model (Tobler hiking
+  function vs.\ constant speed) rather than the underlying network
+  topology, which could be tested using the spatial/temporal null models
+  in \texttt{results/Null-models/}.}
+
+\section*{Data accessibility}
+All code and data underlying this analysis are available in the
+accompanying repository, under \texttt{results/HAC/} (primary analysis)
+and \texttt{results/HAC/paper\_replication/} (validation analysis).
+
+\section*{Authors' contributions}
+\todo[inline]{To be completed.}
+
+\section*{Competing interests}
+The authors declare no competing interests.
+
+\section*{Funding}
+\todo[inline]{To be completed.}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}
