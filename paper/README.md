@@ -41,6 +41,13 @@ currently used as a figure in the paper, and rerunning it needs the full
 - **Methods** (Data, HAC/percolation) and **Results** are filled in, with
   numbers computed directly from `results/HAC/network1-single/data/hac_clusters.csv`
   and `results/HAC/network0-average/` logs/data.
+- §2.1 (Data) is a single paragraph, written in the terse, citation-anchored
+  style of Pažout et al. (2026): no repo paths in the prose (those move to
+  §2.2's naming sentence and to Data accessibility), more detail on the
+  province-boundary source (AWMC AD 200, approximate, clipped to modern
+  coastlines, fine 57-unit vs. coarse 47-unit partition), and the network
+  described as built from the Itiner-e linework and cleaned following the
+  same general procedure as Pažout et al.
 - Two networks, two HAC settings: `network0-average` (calibration, scipy
   `linkage(..., method="average")`) and `network1-single` (primary, `method="single"`,
   chosen because it is exactly equivalent to a percolation sweep over the

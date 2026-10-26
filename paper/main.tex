@@ -95,48 +95,46 @@ built from the Itiner-e Roman road data \citep{desoto2025itinere}:
 
 \subsection{Data}
 
-We work with two networks, referred to throughout by the names of the
-directories holding their analysis in the accompanying repository:
-\texttt{network1-single} (our own network; Section~\ref{sec:primary}) and
-\texttt{network0-average} (the calibration network; Section~\ref{sec:validation}).
-The name suffixes record the HAC linkage setting used for each (see
-Section~\ref{sec:hac-method}) -- this is deliberate, since the two runs
-are not directly comparable without accounting for it.
-
-\paragraph{network1-single: the itinereX network (primary).}
-Built from the raw Itiner-e linework \citep{desoto2025itinere}. Near-miss
-junctions and duplicate endpoints are snapped, the linework is noded, and
-degree-2 chains are simplified, giving a weighted graph of 8{,}460 nodes
-and 12{,}849 edges across 12 connected components (see
-\texttt{data\_cleaning/} in the accompanying repository). Edge weights
-are travel times computed from edge length at a constant walking speed
-of 2~km/h.
-
-\paragraph{network0-average: the calibration network.}
-To check that the method can recover a known administrative partition
-before applying it to our own network, we separately run the same
-general approach on the exact Itiner-e export and endpoint-noded
-topology used by \citet{pazout2026network} (10{,}506 nodes, 14{,}770
-edges, 13 connected components, including ferry links across the
-Bosporus and the Dardanelles), with travel time computed from Tobler's
-hiking function \citep{tobler1993hiking} applied to slope and geodesic
-edge length. This self-contained calibration run is kept in
-\texttt{results/HAC/network0-average/} and does not otherwise modify the
-primary analysis.
-
-\paragraph{Province boundaries.}
-Both networks are overlaid with the Ancient World Mapping Center's
-``Roman Empire AD 200'' province polygons, corrected by A.\ Pa\v{z}out
-\citep{awmc2023provinces} (57 provinces). Each edge is assigned to the
-province containing its midpoint, falling back to the province with the
-longest geometric overlap when the midpoint falls outside every
-polygon; nodes inherit the province of their incident within-province
-edges. Edges that cross a provincial boundary, or that cannot be
-assigned to any province, are excluded from the alignment scoring
-described below.
+The road network is built from the digitized linework released as the
+Itiner-e dataset \citep{desoto2025itinere}, cleaned following the same
+general procedure as \citet{pazout2026network}: near-miss junctions and
+duplicate endpoints are snapped together, the linework is noded at every
+intersection, and the resulting degree-two chains are simplified away,
+giving an undirected planar graph whose nodes are road intersections and
+dead ends and whose edges are the road segments between them. We use two
+variants of this network. Our own, independently cleaned version has
+8{,}460 nodes and 12{,}849 edges across 12 connected components, with
+each edge weighted by travel time at a constant walking speed of
+2~km/h. For calibration, we separately use the exact endpoint-noded
+network and travel-time model of \citet{pazout2026network} themselves --
+10{,}506 nodes and 14{,}770 edges across 13 connected components,
+including two artificial crossings at the Bosporus and the Dardanelles
+connecting the European and Asian landmasses, with travel time estimated
+per edge from Tobler's hiking function \citep{tobler1993hiking} applied
+to slope and geodesic length rather than a flat walking speed. Both
+networks are overlaid with the same province boundaries: the Ancient
+World Mapping Center's ``Roman Empire AD 200'' polygons, corrected by
+A.\ Pa\v{z}out \citep{awmc2023provinces}, approximate and clipped to
+modern coastlines, comprising 57 provinces with Italy further subdivided
+into its constituent regiones for finer resolution on the Italian
+peninsula -- a division not available for other provinces -- alongside a
+coarser, 47-unit partition that merges the regiones back into a single
+Italia for comparison. Each road edge is assigned to the province
+containing its midpoint, falling back to the province with the longest
+geometric overlap where the midpoint falls outside every polygon; nodes
+inherit the province of their incident within-province edges, and edges
+that cross a provincial boundary or cannot be assigned to any province
+are excluded from the alignment scoring in Section~\ref{sec:results}.
 
 \subsection{Hierarchical agglomerative clustering and percolation}
 \label{sec:hac-method}
+
+We refer to our own network and the calibration network throughout by
+two short labels, \texttt{network1-single} (Section~\ref{sec:primary})
+and \texttt{network0-average} (Section~\ref{sec:validation}), whose
+suffixes record the HAC linkage setting used for each, introduced below
+-- this is deliberate, since the two runs are not directly comparable
+without accounting for it.
 
 Following the general approach of \citet{arcaute2016cities}, who use a
 percolation sweep over distance thresholds between street intersections
